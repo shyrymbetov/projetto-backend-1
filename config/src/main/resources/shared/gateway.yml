@@ -1,0 +1,53 @@
+#hystrix:
+#  command:
+#    default:
+#      execution:
+#        isolation:
+#          thread:
+#            timeoutInMilliseconds: 20000
+#
+#ribbon:
+#  ReadTimeout: 20000
+#  ConnectTimeout: 20000
+
+spring:
+  cloud:
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:4200"
+            allowedHeaders: "*"
+            allowedMethods: "*"
+      routes:
+        - id: user_service
+          uri: lb://USER-SERVICE/
+          predicates:
+            - Path=/users/**
+
+        - id: auth_service
+          uri: lb://AUTH-SERVICE/
+          predicates:
+            - Path=/uaa/**
+
+        - id: file_service
+          uri: lb://FILE-SERVICE/
+          predicates:
+            - Path=/file/**
+
+        - id: book_service
+          uri: lb://BOOK-SERVICE/
+          predicates:
+            - Path=/books/**
+
+        - id: mail_service
+          uri: lb://MAIL-SERVICE/
+          predicates:
+            - Path=/mail/**
+
+      discovery:
+        locator:
+          enabled: true
+
+server:
+  port: 4000

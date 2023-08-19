@@ -1,0 +1,38 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/softbooks
+    username: postgres
+    password: postgres
+
+    driverClassName: org.postgresql.Driver
+    platform: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
+
+security:
+  authentication:
+    registration:
+      duration: 1800 #  seconds -> 30min
+      failed-count: 5
+    reset-password:
+      duration: 1800 #  seconds -> 30min
+      failed-count: 5
+    authorization:
+      failed-count: 5
+      block-time: 5 # minutes
+      providers:
+        google:
+          client-ids:
+            - 326696755735-a77of8s3aihoq3kels752uhh12tcq4h5.apps.googleusercontent.com
+
+server:
+  servlet:
+    context-path: /uaa
+  port: 5001
