@@ -1,5 +1,6 @@
 package kz.innlab.userservice.user.controller
 
+import kz.innlab.userservice.system.dto.EmailChangeDTO
 import kz.innlab.userservice.user.dto.PasswordDTO
 import kz.innlab.userservice.user.dto.Status
 import kz.innlab.userservice.user.dto.UserRequest
@@ -21,25 +22,6 @@ class UserActionsController {
     @Autowired
     private lateinit var service: UserActionsService
 
-    @PostMapping("/reset-password")
-    fun sendResetLink(@Valid @RequestBody map: MutableMap<String, String>): Status {
-        return service.sendResetPasswordLink(map["email"]?:"")
-    }
-
-    @PostMapping("/token/password")
-    fun changePasswordToken(
-        @Valid @RequestBody passwordDto: PasswordDTO
-    ): Status {
-        return service.changeUserPasswordToken(passwordDto)
-    }
-
-    @PostMapping("/check-token")
-    fun showChangePasswordPage(
-        @Valid @RequestBody token: String
-    ): Status {
-        return service.validatePasswordResetToken(token)
-    }
-
     @PostMapping("/change-password")
     @PreAuthorize("isAuthenticated()")
     fun changePassword(
@@ -47,6 +29,35 @@ class UserActionsController {
         principal: Principal
     ): Status {
         return service.changePassword(principal, passwordDTO)
+    }
+
+
+    @PostMapping("/generate-code")
+    fun sendResetLink(@Valid @RequestBody map: MutableMap<String, String>): Status {
+        return service.sendVerifyCodeToEmail(map["email"]?:"")
+    }
+
+    @PostMapping("/reset-password")
+    fun changePasswordToken(
+        @Valid @RequestBody passwordDto: PasswordDTO
+    ): Status {
+        return service.changePasswordByToken(passwordDto)
+    }
+
+    @PostMapping("/email-verify")
+    @PreAuthorize("#oauth2.hasScope('server') or hasRole('ADMIN')")
+    fun verifyEmail(
+        @Valid @RequestBody emailDto: EmailChangeDTO
+    ): Status {
+        return service.verifyUserEmail(emailDto)
+    }
+
+    @PostMapping("/change-email")
+    @PreAuthorize("#oauth2.hasScope('server') or hasRole('ADMIN')")
+    fun changeEmail(
+        @Valid @RequestBody emailDto: EmailChangeDTO
+    ): Status {
+        return service.changeUserEmail(emailDto)
     }
 
     @PostMapping("/has-role")

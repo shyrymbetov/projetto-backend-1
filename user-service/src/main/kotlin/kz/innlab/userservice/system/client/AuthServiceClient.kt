@@ -1,7 +1,9 @@
 package kz.innlab.userservice.system.client
 
+import kz.innlab.userservice.system.dto.EmailChangeDTO
 import kz.innlab.userservice.user.dto.*
 import org.springframework.cloud.openfeign.FeignClient
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import java.util.*
 import javax.validation.Valid
@@ -10,21 +12,26 @@ import javax.validation.Valid
  * @project microservice-template
  * @author Bekzat Sailaubayev on 09.03.2022
  */
-@FeignClient(name = "auth-service")
+@FeignClient(name = "auth-service", path = "uaa")
 interface AuthServiceClient {
 
-    @PostMapping("/uaa/security/user/reset-password/{username}")
-    fun resetPassword(@PathVariable(value = "username") username: String): String?
+    @PostMapping("/security/change-password")
+    fun changePassword(@Valid @RequestBody passwordDto: PasswordDTO): Status
 
-    @PostMapping("/uaa/security/user/change-password")
-    fun changePassword(@Valid @RequestBody passwordDTO: PasswordDTO): Status
 
-    @PostMapping("/uaa/security/token/password")
-    fun changePasswordToken(@Valid @RequestBody passwordDto: PasswordDTO): Status
+    //There give back token
+    @PostMapping("/security/generate-code")
+    fun generateCode(@RequestBody username: String): String?
 
-    @PostMapping("/uaa/security/check-token")
-    fun showChangePasswordPage(@RequestParam("token") token: String): Status
+    //change password after verify token
+    @PostMapping("/security/reset-password")
+    fun changePasswordByToken(@Valid @RequestBody passwordDto: PasswordDTO): Status
 
-    @PostMapping("/uaa/status/last-active")
-    fun getActiveUsers(@Valid @RequestBody ids: List<UUID>): List<UUID>
+    @PostMapping("/security/email-verify")
+    @PreAuthorize("#oauth2.hasScope('server') or hasRole('ADMIN')")
+    fun verifyEmail(@Valid @RequestBody emailDto: EmailChangeDTO): Status
+
+    @PostMapping("/security/change-email")
+    @PreAuthorize("#oauth2.hasScope('server') or hasRole('ADMIN')")
+    fun changeEmail(@Valid @RequestBody emailDto: EmailChangeDTO): Status
 }

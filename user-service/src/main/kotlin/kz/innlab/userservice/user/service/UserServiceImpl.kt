@@ -5,6 +5,8 @@ import kz.innlab.userservice.user.dto.Status
 import kz.innlab.userservice.user.model.User
 import kz.innlab.userservice.user.model.UsersRoles
 import kz.innlab.userservice.user.dto.UserRequest
+import kz.innlab.userservice.user.dto.UserResponse
+import kz.innlab.userservice.user.model.UserProviderType
 import kz.innlab.userservice.user.repository.RoleRepository
 import kz.innlab.userservice.user.repository.UserRepository
 import kz.innlab.userservice.user.repository.UsersRolesRepository
@@ -20,7 +22,7 @@ import java.util.*
  * @author Bekzat Sailaubayev on 09.03.2022
  */
 @Service
-class UserServiceImpl: UserService {
+class UserServiceImpl : UserService {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -35,8 +37,8 @@ class UserServiceImpl: UserService {
     @Autowired
     lateinit var roleRepository: RoleRepository
 
-    override fun getUserListByRoles(roles: List<String>): ArrayList<User> {
-        var result = arrayListOf<User>()
+    override fun getUserListByRoles(roles: List<String>): List<UserResponse> {
+        var result = listOf<UserResponse>()
 
         val rolesR = roleRepository.findAllByNameIgnoreCaseInAndDeletedAtIsNull(
             roles.map { it.trim().uppercase() }
@@ -51,16 +53,34 @@ class UserServiceImpl: UserService {
         return result
     }
 
-    override fun getUserListByIds(ids: List<UUID>): ArrayList<User> {
-        return repository.findAllByIdInAndDeletedAtIsNull(ids)
+    override fun getUserListByIds(ids: List<UUID>): List<UserResponse> {
+        return repository.findAllByIdInAndDeletedAtIsNull(ids).map { mapUserToUserReponse(it) }
     }
 
-    override fun getUserListByIdsArchive(ids: List<UUID>): ArrayList<User> {
-        return repository.findAllByIdInAndDeletedAtIsNotNull(ids)
+    private fun mapUserToUserReponse(user: User): UserResponse {
+        return UserResponse(
+            user.id,
+            user.firstName,
+            user.name,
+            user.lastName,
+            user.avatar,
+            user.provider,
+            user.fio,
+            user.email,
+            user.roles,
+        )
     }
 
-    override fun getUserById(id: UUID): Optional<User> {
-        return repository.findById(id)
+    override fun getUserList(): List<UserResponse> {
+        return repository.findAllByDeletedAtIsNull().map { mapUserToUserReponse(it) }
+    }
+
+    override fun getUserListByIdsArchive(ids: List<UUID>): List<UserResponse> {
+        return repository.findAllByIdInAndDeletedAtIsNotNull(ids).map { mapUserToUserReponse(it) }
+    }
+
+    override fun getUserById(id: UUID): Optional<UserResponse> {
+        return repository.findById(id).map { mapUserToUserReponse(it) }
     }
 
     override fun createNewUser(user: UserRequest): Status {
@@ -71,7 +91,7 @@ class UserServiceImpl: UserService {
 
             status.status = 1
             status.message = "Success"
-            status.value = create(newUser)
+            status.value = create(newUser, user.roles)
         } catch (e: Exception) {
             log.error("Пользователь с таким адресом уже существует", e)
             status.status = 2
@@ -82,15 +102,16 @@ class UserServiceImpl: UserService {
         return status
     }
 
-    private fun create(user: User): UUID? {
+    private fun create(user: User, roles: List<String>): UUID? {
         val existing = repository.findByEmailIgnoreCaseAndDeletedAtIsNull(user.email)
         existing.ifPresent { it -> throw IllegalArgumentException("user already exists: " + it.email) }
+        user.password = encoder.encode(user.password.trim())
         repository.save(user)
-
+        setRoles(user.id!!, roles)
         return user.id
     }
 
-    override fun getCurrentUser(name: String): Optional<User> {
+    override fun getCurrentUser(name: String): Optional<UserResponse> {
         return getUserById(UUID.fromString(name))
     }
 
@@ -99,16 +120,19 @@ class UserServiceImpl: UserService {
         newUser.firstName = userRequest.firstName
         newUser.lastName = userRequest.lastName
         newUser.email = userRequest.email
-        newUser.password = userRequest.password ?:"123"
+        newUser.password = userRequest.password ?: "123"
+        newUser.provider = UserProviderType.LOCAL
         newUser.roles = userRequest.roles
         return newUser
     }
+
     private fun userRequestToUser(userRequest: RegistrationUserDto): User {
         val newUser = User()
         newUser.firstName = userRequest.firstName
         newUser.lastName = userRequest.lastName
         newUser.email = userRequest.email
-        newUser.password = userRequest.password ?:"123"
+        newUser.provider = UserProviderType.LOCAL
+        newUser.password = userRequest.password ?: "123"
         return newUser
     }
 
@@ -120,14 +144,14 @@ class UserServiceImpl: UserService {
             newUser.enabled = true
             newUser.firstName = user.firstName
             newUser.lastName = user.lastName
-            newUser.email = user.email?:""
-            newUser.password = user.password ?:"123"
+            newUser.email = user.email ?: ""
+            newUser.password = user.password ?: "123"
             newUser.roles = user.roles
             newUser.enabled = false
 
             status.status = 1
             status.message = "Success"
-            status.value = create(newUser)
+            status.value = create(newUser, user.roles)
         } catch (e: Exception) {
             log.error("Пользователь с таким адресом уже существует", e)
             status.status = 2
@@ -135,6 +159,10 @@ class UserServiceImpl: UserService {
             log.warn("Пользователь с таким адресом уже существует: " + user.email)
         }
         return status
+    }
+
+    override fun getUserByIdForService(id: UUID): Optional<User> {
+        return repository.findByIdAndDeletedAtIsNull(id)
     }
 
     override fun saveChangesCurrentUser(user: UserRequest, username: String): Status {
@@ -156,7 +184,7 @@ class UserServiceImpl: UserService {
     }
 
     override fun deleteCurrentUser(name: String): Status {
-        return  delete(UUID.fromString(name))
+        return delete(UUID.fromString(name))
     }
 
     override fun saveChanges(user: UserRequest): Status {
@@ -204,7 +232,8 @@ class UserServiceImpl: UserService {
     override fun checkEmail(newUserRequest: UserRequest): Status {
         val status = Status()
         var emailCandidate = Optional.empty<User>()
-        if (newUserRequest.email != "") emailCandidate = repository.findByEmailIgnoreCaseAndDeletedAtIsNull(newUserRequest.email)
+        if (newUserRequest.email != "") emailCandidate =
+            repository.findByEmailIgnoreCaseAndDeletedAtIsNull(newUserRequest.email)
         var isCurrentUserEmail = false
         emailCandidate.ifPresent {
             if (it.id!! == newUserRequest.id) {

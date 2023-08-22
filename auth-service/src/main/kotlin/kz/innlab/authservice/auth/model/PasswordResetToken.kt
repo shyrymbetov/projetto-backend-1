@@ -19,11 +19,12 @@ class PasswordResetToken {
     @Column(columnDefinition = "character varying")
     var code: String? = null
 
+    var oldEmail: String? = null
     var changed: Boolean = false
 
     @ManyToOne
     @JoinColumn(nullable = false, name = "user_id", referencedColumnName = "id")
-    var user: kz.innlab.authservice.auth.model.User? = null
+    var user: User? = null
 
     var expiryDate: Date? = null
 

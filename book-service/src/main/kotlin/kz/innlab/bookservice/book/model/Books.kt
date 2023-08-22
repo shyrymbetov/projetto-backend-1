@@ -13,11 +13,14 @@ class Books: Auditable<String?>() {
 
     var name: String? = null
 
+    var author: String? = null
+
     @Column(name = "description", columnDefinition = "TEXT")
     var description: String? = null
 
-    @Column(name = "avatar_id")
+    var category: String? = null
+
+    var subCategory: String? = null
+
     var avatarId: UUID? = null
-
-
 }

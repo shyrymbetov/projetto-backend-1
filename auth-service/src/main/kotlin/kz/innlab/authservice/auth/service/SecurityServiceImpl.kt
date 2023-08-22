@@ -1,5 +1,9 @@
 package kz.innlab.authservice.auth.service
 
+import kz.innlab.authservice.auth.dto.EmailChangeDTO
+import kz.innlab.authservice.auth.dto.PasswordDTO
+import kz.innlab.authservice.auth.dto.Status
+import kz.innlab.authservice.auth.model.EmailVerifyToken
 import kz.innlab.authservice.auth.model.PasswordResetToken
 import kz.innlab.authservice.auth.repository.PasswordResetTokenRepository
 import kz.innlab.authservice.auth.repository.UserRepository
@@ -20,7 +24,10 @@ class SecurityServiceImpl: SecurityService {
     @Autowired
     lateinit var passwordTokenRepository: PasswordResetTokenRepository
 
-    override fun createPasswordResetTokenForUser(username: String): String {
+    @Autowired
+    lateinit var emailTokenRepository: PasswordResetTokenRepository
+
+    override fun createTokenForUser(username: String): String {
         var token = UUID.randomUUID().toString()
 
         repository.findByEmailIgnoreCaseAndDeletedAtIsNull(username).ifPresentOrElse({
@@ -45,8 +52,8 @@ class SecurityServiceImpl: SecurityService {
         return token
     }
 
-    override fun validatePasswordResetToken(token: String): kz.innlab.authservice.auth.dto.Status {
-        val status = kz.innlab.authservice.auth.dto.Status()
+    override fun validatePasswordResetToken(token: String): Status {
+        val status = Status()
         val split = token.split(":")
         if (split.size != 2) {
             return status
@@ -60,7 +67,7 @@ class SecurityServiceImpl: SecurityService {
             "used"
         } else if (encoder.matches(token, passToken.get().code!!)) {
             status.status = 1
-            status.value = true
+            status.value = split.first().toString()
             null
         } else {
             "not matches"
@@ -68,25 +75,68 @@ class SecurityServiceImpl: SecurityService {
         return status
     }
 
-    override fun changeUserPasswordToken(passwordDto: kz.innlab.authservice.auth.dto.PasswordDTO): kz.innlab.authservice.auth.dto.Status {
-        val status = kz.innlab.authservice.auth.dto.Status()
-        val split = passwordDto.token!!.split(":")
-        if (split.size != 2) {
-            return status
-        }
-        val result = validatePasswordResetToken(passwordDto.token!!)
-
+    override fun verifyUserEmail(emailDto: EmailChangeDTO): Status {
+        val status = Status()
+        val result = validatePasswordResetToken(emailDto.token?:"")
         if (result.status != 1) {
-            println("Not validated")
             return result
         }
-        println("Searching TOKEN => ${split.first()}")
-        passwordTokenRepository.findByToken(split.first()).ifPresent { token ->
+        passwordTokenRepository.findByToken(result.value.toString()).ifPresent { token ->
+            try {
+                token.user!!.enabled = true
+                repository.save(token.user!!)
+
+                token.changed = true
+                passwordTokenRepository.save(token)
+
+                status.status = 1
+                status.message = "Successful"
+            } catch (_: Exception) {
+            }
+        }
+        return status
+    }
+
+    override fun changeUserPasswordByToken(passwordDto: PasswordDTO): Status {
+        val status = Status()
+        val result = validatePasswordResetToken(passwordDto.token?:"")
+        if (result.status != 1) {
+            return result
+        }
+        passwordTokenRepository.findByToken(result.value.toString()).ifPresent { token ->
             try {
                 token.user!!.password = encoder.encode(passwordDto.newPassword)
                 repository.save(token.user!!)
 
                 token.changed = true
+                passwordTokenRepository.save(token)
+
+                status.status = 1
+                status.message = "Successful"
+            } catch (_: Exception) {
+            }
+
+        }
+        return status
+    }
+
+    override fun changeUserEmail(emailDto: EmailChangeDTO): Status {
+        val status = Status()
+        if (emailDto.newEmail.isNullOrBlank()) {
+            return status
+        }
+        val result = validatePasswordResetToken(emailDto.token?:"")
+        if (result.status != 1) {
+            return result
+        }
+        passwordTokenRepository.findByToken(result.value.toString()).ifPresent { token ->
+            try {
+                token.oldEmail = token.user!!.email
+                token.changed = true
+
+                token.user!!.email = emailDto.newEmail ?: ""
+                repository.save(token.user!!)
+
                 passwordTokenRepository.save(token)
 
                 status.status = 1
@@ -107,8 +157,8 @@ class SecurityServiceImpl: SecurityService {
         return passToken.expiryDate!!.before(cal.time)
     }
 
-    override fun changeUserPassword(passwordDto: kz.innlab.authservice.auth.dto.PasswordDTO): kz.innlab.authservice.auth.dto.Status {
-        val status = kz.innlab.authservice.auth.dto.Status()
+    override fun changeUserPassword(passwordDto: PasswordDTO): Status {
+        val status = Status()
 
         repository.findByIdAndDeletedAtIsNull(passwordDto.userId!!).ifPresent {
             try {

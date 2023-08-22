@@ -94,9 +94,6 @@ class User: Auditable<String?>() {
             return field
         }
 
-    @Transient
-    var status: Boolean = true
-
     fun incrementLoginAttempts() { loginAttempts = loginAttempts!! + 1 }
 
 }

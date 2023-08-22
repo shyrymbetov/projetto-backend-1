@@ -12,13 +12,13 @@ import kotlin.collections.ArrayList
 interface UserRepository: JpaRepository<User, UUID> {
     fun findByIdAndDeletedAtIsNull(id: UUID): Optional<User>
 
-    fun findAllByDeletedAtIsNull(): ArrayList<User>
+    fun findAllByDeletedAtIsNull(): List<User>
     fun findAllByDeletedAtIsNull(page: Pageable): Page<User>
     fun findAllByIdInAndDeletedAtIsNull(@Param("id") ids: List<UUID>, page: Pageable): Page<User>
-    fun findAllByIdInAndDeletedAtIsNull(@Param("id") ids: List<UUID>): ArrayList<User>
-    fun findAllByIdInAndDeletedAtIsNotNull(@Param("id") ids: List<UUID>): ArrayList<User>
+    fun findAllByIdInAndDeletedAtIsNull(@Param("id") ids: List<UUID>): List<User>
+    fun findAllByIdInAndDeletedAtIsNotNull(@Param("id") ids: List<UUID>): List<User>
 
-    fun findByEmail(@Param("email") email: String): ArrayList<User>
+    fun findByEmail(@Param("email") email: String): List<User>
 
     fun findByEmailIgnoreCaseAndDeletedAtIsNull(@Param("email") email: String): Optional<User>
 
@@ -30,5 +30,5 @@ interface UserRepository: JpaRepository<User, UUID> {
             "ON users_roles.user_id = users.id " +
             "WHERE priority_number BETWEEN :fromPriority AND :toPriority " +
             "AND roles.deleted_at IS NULL AND users.deleted_at IS NULL", nativeQuery = true)
-    fun managerList(@Param("fromPriority") fromPriority: Long?, @Param("toPriority") toPriority: Long?): ArrayList<User>
+    fun managerList(@Param("fromPriority") fromPriority: Long?, @Param("toPriority") toPriority: Long?): List<User>
 }

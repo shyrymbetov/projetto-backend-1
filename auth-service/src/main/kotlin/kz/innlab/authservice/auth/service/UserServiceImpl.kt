@@ -62,6 +62,10 @@ class UserServiceImpl: UserService {
         return repository.findById(id)
     }
 
+    override fun getUserByEmailIgnoreCage(email: String): Optional<User> {
+        return repository.findByEmailIgnoreCaseAndDeletedAtIsNull(email)
+    }
+
     override fun createNewUser(user: UserRequest): Status {
         val status = Status()
         try {
@@ -70,7 +74,7 @@ class UserServiceImpl: UserService {
 
             status.status = 1
             status.message = "Success"
-            status.value = create(newUser)
+            status.value = create(newUser, user.roles)
         } catch (e: Exception) {
             log.error("Пользователь с таким адресом уже существует", e)
             status.status = 2
@@ -81,10 +85,13 @@ class UserServiceImpl: UserService {
         return status
     }
 
-    private fun create(user: User): UUID? {
+    override fun create(user: User, roles: List<String>): UUID? {
         val existing = repository.findByEmailIgnoreCaseAndDeletedAtIsNull(user.email)
         existing.ifPresent { it -> throw IllegalArgumentException("user already exists: " + it.email) }
+        user.password = encoder.encode(user.password.trim())
+
         repository.save(user)
+        setRoles(user.id!!, roles)
 
         return user.id
     }

@@ -1,7 +1,11 @@
 package kz.innlab.authservice.system.service.security
 
+import kz.innlab.authservice.auth.dto.NewUserDto
 import kz.innlab.authservice.auth.model.User
+import kz.innlab.authservice.auth.model.payload.UserProviderType
+import kz.innlab.authservice.auth.model.payload.UserRequest
 import kz.innlab.authservice.auth.repository.UserRepository
+import kz.innlab.authservice.auth.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.util.*
@@ -10,26 +14,27 @@ import java.util.*
 abstract class AbstractProviderService {
 
     @Autowired
-    private lateinit var userRepository: UserRepository
+    private lateinit var userService: UserService
 
-    abstract fun checkToken(tokenId: String): User
+    abstract fun checkToken(tokenId: String): NewUserDto
 
-    fun getUserCreateIfNotExistsByEmail(token: kz.innlab.authservice.auth.dto.NewUserDto): User {
-        var user = User()
-        userRepository.findByEmailIgnoreCaseAndDeletedAtIsNull(token.email!!).ifPresentOrElse({
-            user = it
+    fun getUserCreateIfNotExists(token: NewUserDto, role: String): UUID? {
+        var result: UUID? = null
+        userService.getUserByEmailIgnoreCage(token.email).ifPresentOrElse({
+            result = it.id
         }, {
+            val user = User()
             user.email = token.email
-            user.name = token.name
             user.firstName = token.firstName ?: token.email
             user.lastName = token.lastName
             user.enabled = true
             user.provider = token.provider
             user.password = UUID.randomUUID().toString()
-            userRepository.save(user)
+            user.roles = listOf(role)
+            result = userService.create(user, listOf(role))
         })
 
-        return user
+        return result
     }
 
 }

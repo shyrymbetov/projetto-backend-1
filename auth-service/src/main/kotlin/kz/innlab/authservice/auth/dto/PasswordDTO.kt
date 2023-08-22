@@ -7,6 +7,5 @@ class PasswordDTO {
     val userId: UUID? = null
     val oldPassword: String? = null
     val token: String? = null
-//    @ValidPassword
     val newPassword: String? = null
 }

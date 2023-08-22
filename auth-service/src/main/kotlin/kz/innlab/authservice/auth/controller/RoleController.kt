@@ -1,7 +1,6 @@
 package kz.innlab.authservice.auth.controller
 
-import kz.innlab.authservice.auth.model.Role
-import kz.innlab.authservice.service.RoleService
+import kz.innlab.authservice.auth.service.RoleService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*

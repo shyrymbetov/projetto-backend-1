@@ -1,5 +1,6 @@
 package kz.innlab.userservice.user.dto
 
+import kz.innlab.userservice.user.model.UserProviderType
 import java.sql.Timestamp
 import java.util.*
 
@@ -13,6 +14,7 @@ class UserRequest {
     var lastName: String? = null
     var fio: String? = null
     var email: String = ""
+    var provider: UserProviderType = UserProviderType.LOCAL
     var password: String? = ""
         set(value) {
             field = value ?: ""

@@ -4,11 +4,11 @@ import kz.innlab.authservice.auth.model.payload.UserProviderType
 import javax.validation.constraints.NotNull
 
 data class NewUserDto(
-    val email: String? = null,
+    val email: String = "",
     val username: String = "",
     val name: String? = null,
-    val firstName: String? = null,
-    val lastName: String = "",
+    var firstName: String? = null,
+    var lastName: String? = null,
     val emailOptional: String? = null,
     val provider: @NotNull UserProviderType? = null
 )

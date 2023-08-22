@@ -36,6 +36,7 @@ class UserDetailsServiceImpl: UserDetailsService {
             ?: throw UsernameNotFoundException("User '$username' not found")
 
         val isLocked = user.blocked != null && user.blocked!!.after(Timestamp(System.currentTimeMillis()))
+        val disabled = user.enabled != true
 
         if (password.isBlank()) {
             password = user.password
@@ -51,7 +52,7 @@ class UserDetailsServiceImpl: UserDetailsService {
             .accountExpired(false)
             .accountLocked(isLocked)
             .credentialsExpired(false)
-            .disabled(false)
+            .disabled(disabled)
             .build()
 
         return UserPrincipal(userPrincipal, user.id!!)

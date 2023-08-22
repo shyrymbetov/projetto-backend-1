@@ -4,7 +4,9 @@ import kz.innlab.userservice.user.dto.RegistrationUserDto
 import kz.innlab.userservice.user.dto.Status
 import kz.innlab.userservice.user.model.User
 import kz.innlab.userservice.user.dto.UserRequest
+import kz.innlab.userservice.user.dto.UserResponse
 import kz.innlab.userservice.user.service.UserService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -21,20 +23,16 @@ import javax.validation.Valid
 @RequestMapping("/current")
 class CurrentUserController {
 
+    @Autowired
     lateinit var service: UserService
 
-    @GetMapping("/current")
+    @GetMapping("")
     @PreAuthorize("isAuthenticated()")
-    fun getCurrentAccount(principal: Principal): Optional<User> {
+    fun getCurrentAccount(principal: Principal): Optional<UserResponse> {
         return service.getCurrentUser(principal.name)
     }
 
-    @PostMapping("/registration")
-    fun registration(@Valid @RequestBody user: RegistrationUserDto): ResponseEntity<*> {
-        return ResponseEntity(service.registration(user), HttpStatus.OK)
-    }
-
-    @PutMapping("/current/update")
+    @PutMapping("")
     @PreAuthorize("isAuthenticated()")
     fun saveCurrentAccount(@Valid @RequestBody user: UserRequest, principal: Principal): Status {
         return service.saveChangesCurrentUser(user, principal.name)

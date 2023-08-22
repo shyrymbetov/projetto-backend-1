@@ -18,12 +18,6 @@ spring:
       starttls:
         enable: true
     username: innlab@gmail.com
-  profiles: development
-  kafka:
-    bootstrap-servers: localhost:9092
-    consumer:
-      group-id: 1
-
 
 server:
   servlet:

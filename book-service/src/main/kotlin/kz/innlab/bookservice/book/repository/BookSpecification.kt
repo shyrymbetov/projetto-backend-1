@@ -1,7 +1,6 @@
 package kz.innlab.bookservice.book.repository
 
 import kz.innlab.bookservice.book.model.*
-import kz.innlab.bookservice.book.model.payload.BookLevel
 import org.springframework.data.jpa.domain.Specification
 import java.sql.Timestamp
 import java.util.*
@@ -9,8 +8,8 @@ import java.util.*
 class BookSpecification {
 
     companion object {
-        fun containsName(name: String): Specification<Book> {
-            return Specification<Book> { root, query, builder ->
+        fun containsName(name: String): Specification<Books> {
+            return Specification<Books> { root, query, builder ->
                 if (name.isNotBlank()) {
                     builder.like(builder.lower(root.get("name")), "%${name.lowercase()}%")
                 } else {
@@ -19,29 +18,18 @@ class BookSpecification {
             }
         }
 
-        fun equalsLevel(level: BookLevel?): Specification<Book> {
-            return Specification<Book> { root, query, builder ->
-                if (level != null) {
-                    builder.equal(root.get<BookLevel>("level"), level)
+        fun author(name: String): Specification<Books> {
+            return Specification<Books> { root, query, builder ->
+                if (name.isNotBlank()) {
+                    builder.equal(root.get<UUID>("creator"), "%${name.lowercase()}%")
                 } else {
                     null
                 }
             }
         }
 
-        fun containsGenreId(genreId: UUID?): Specification<Book> {
-            return Specification<Book> { root, query, builder ->
-                if (genreId != null) {
-                    builder.isNotNull(builder.function("array_position",
-                        Int::class.java, root.get<Array<UUID>>("genreIds"), builder.literal(genreId)))
-                } else {
-                    null
-                }
-            }
-        }
-
-        fun containsAuthorId(authorId: UUID?): Specification<Book> {
-            return Specification<Book> { root, query, builder ->
+        fun containsAuthorId(authorId: UUID?): Specification<Books> {
+            return Specification<Books> { root, query, builder ->
                 if (authorId != null) {
                     builder.isNotNull(builder.function("array_position",
                         Int::class.java, root.get<Array<UUID>>("authorIds"), builder.literal(authorId)))
@@ -51,8 +39,8 @@ class BookSpecification {
             }
         }
 
-        fun deletedAtIsNull(): Specification<Book> {
-            return Specification<Book> { root, query, builder ->
+        fun deletedAtIsNull(): Specification<Books> {
+            return Specification<Books> { root, query, builder ->
                 builder.isNull(root.get<Timestamp>("deletedAt"))
             }
         }

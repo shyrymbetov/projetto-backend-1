@@ -1,11 +1,11 @@
 package kz.innlab.userservice.user.controller
 
-import kz.innlab.userservice.user.dto.UserShortDto
-import kz.innlab.userservice.user.dto.Status
+import kz.innlab.userservice.user.dto.*
 import kz.innlab.userservice.user.model.User
-import kz.innlab.userservice.user.dto.UserRequest
 import kz.innlab.userservice.user.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import java.security.Principal
@@ -25,40 +25,40 @@ class UserController {
     @Autowired
     private lateinit var userService: UserService
 
-    @PostMapping("/list")
+    @GetMapping("/list")
     @PreAuthorize("#oauth2.hasScope('server') or hasRole('ADMIN')")
-    fun getUserListByIds(@Valid @RequestBody ids: List<UUID>): ArrayList<User> {
-        return userService.getUserListByIds(ids)
+    fun getUserListByIds(): List<UserResponse> {
+        return userService.getUserList()
     }
 
-    @PostMapping("/list/archive")
-    @PreAuthorize("#oauth2.hasScope('server') or hasRole('ADMIN')")
-    fun getUserListByIdsArchive(@Valid @RequestBody ids: List<UUID>): ArrayList<User> {
-        return userService.getUserListByIdsArchive(ids)
-    }
-
-    @PostMapping("/list/role")
-    @PreAuthorize("#oauth2.hasScope('server') or hasRole('ADMIN')")
-    fun getUserListByRole(@Valid @RequestBody roles: List<String>): ArrayList<User> {
-        return userService.getUserListByRoles(roles)
-    }
-
-    @GetMapping("/user/{id}")
+    @GetMapping("/{id}")
     @PreAuthorize("#oauth2.hasScope('server') or isAuthenticated()")
     fun getUserById(
         @PathVariable(value = "id") id: UUID,
         principal: Principal
-    ): Optional<User> {
+    ): Optional<UserResponse> {
         return userService.getUserById(id)
+    }
+
+    @PostMapping("/registration")
+    fun registration(@Valid @RequestBody user: RegistrationUserDto): ResponseEntity<*> {
+        return ResponseEntity(userService.registration(user), HttpStatus.OK)
     }
 
     @PostMapping("")
     @PreAuthorize("hasAnyRole('ADMIN')")
     fun createNewAccount(
-        @Valid @RequestBody user: UserRequest,
-        principal: Principal
+        @Valid @RequestBody user: UserRequest
     ): Status {
         return userService.createNewUser(user)
+    }
+
+    @PutMapping("")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    fun editUser(
+        @Valid @RequestBody user: UserRequest
+    ): Status {
+        return userService.saveChanges(user)
     }
 
 
@@ -67,9 +67,4 @@ class UserController {
     fun removeAccount(@PathVariable(value = "id") id: UUID): Status {
         return userService.moveToTrash(id)
     }
-
-
-
-
-
 }

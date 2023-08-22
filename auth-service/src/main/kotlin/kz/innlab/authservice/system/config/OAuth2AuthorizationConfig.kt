@@ -25,6 +25,7 @@ import org.springframework.security.oauth2.provider.CompositeTokenGranter
 import org.springframework.security.oauth2.provider.OAuth2RequestFactory
 import org.springframework.security.oauth2.provider.TokenGranter
 import org.springframework.security.oauth2.provider.client.ClientCredentialsTokenGranter
+import org.springframework.security.oauth2.provider.endpoint.TokenEndpoint
 import org.springframework.security.oauth2.provider.implicit.ImplicitTokenGranter
 import org.springframework.security.oauth2.provider.password.ResourceOwnerPasswordTokenGranter
 import org.springframework.security.oauth2.provider.refresh.RefreshTokenGranter
@@ -35,6 +36,7 @@ import org.springframework.security.oauth2.provider.token.TokenEnhancerChain
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory
+import org.springframework.security.oauth2.server.authorization.authentication.ClientSecretAuthenticationProvider
 import java.util.*
 
 
@@ -63,9 +65,14 @@ class OAuth2AuthorizationConfig : AuthorizationServerConfigurerAdapter() {
     private lateinit var env: Environment
 
     fun tokenGranter(): TokenGranter {
+        val tokenEnhancerChain = TokenEnhancerChain()
+        tokenEnhancerChain.setTokenEnhancers(listOf(CustomTokenEnhancer(), tokenEnhancer()))
         val clientDetails: ClientDetailsService = clientDetailsService
-        val tokenServices: AuthorizationServerTokenServices = DefaultTokenServices()
+        val tokenServices = DefaultTokenServices()
+        tokenServices.setTokenStore(tokenStore())
+        tokenServices.setTokenEnhancer(tokenEnhancerChain)
         val requestFactory: OAuth2RequestFactory = DefaultOAuth2RequestFactory(clientDetailsService)
+
         val tokenGranters: MutableList<TokenGranter> = ArrayList()
 
         tokenGranters.add(RefreshTokenGranter(tokenServices, clientDetails, requestFactory))
@@ -105,6 +112,7 @@ class OAuth2AuthorizationConfig : AuthorizationServerConfigurerAdapter() {
         tokenEnhancerChain.setTokenEnhancers(listOf(CustomTokenEnhancer(), tokenEnhancer()))
         endpoints
             .authenticationManager(authenticationManager)
+            .tokenGranter(tokenGranter())
             .tokenStore(tokenStore())
             .tokenEnhancer(tokenEnhancerChain)
             .accessTokenConverter(tokenEnhancer())
@@ -123,7 +131,7 @@ class OAuth2AuthorizationConfig : AuthorizationServerConfigurerAdapter() {
     override fun configure(clients: ClientDetailsServiceConfigurer) {
         clients.inMemory()
             .withClient("browser")
-            .authorizedGrantTypes("refresh_token", "password")
+            .authorizedGrantTypes("refresh_token", "password", "google")
             .scopes("ui")
             .and()
             .withClient("user-service")

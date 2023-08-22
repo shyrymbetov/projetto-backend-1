@@ -1,11 +1,8 @@
 package kz.innlab.authservice.system.exceptionHandler
 
-import kz.innlab.authservice.system.client.TelegramServiceClient
-import kz.innlab.authservice.auth.dto.TelegramMessageDto
 import lombok.extern.slf4j.Slf4j
 import org.apache.commons.lang3.exception.ExceptionUtils
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -32,9 +29,6 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
 
     @Value("\${spring.application.name: service}")
     private val applicationName = ""
-
-    @Autowired
-    private lateinit var telegramClient: TelegramServiceClient
 
     private var log = LoggerFactory.getLogger(javaClass)
 
@@ -63,15 +57,6 @@ class GlobalExceptionHandler : ResponseEntityExceptionHandler() {
     ): ResponseEntity<Any> {
         log.error("Failed to find the requested element", itemNotFoundException)
         return buildErrorResponse(itemNotFoundException, HttpStatus.NOT_FOUND, request)
-    }
-
-    @ExceptionHandler(Exception::class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    fun handleAllUncaughtException(exception: Exception, request: WebRequest): ResponseEntity<Any> {
-        log.error("Unknown error occurred", exception.message)
-        val message = "$applicationName: ${SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(java.sql.Timestamp(System.currentTimeMillis()))} ERROR \n ${ExceptionUtils.getStackTrace(exception) ?: "Unknown error occurred"}"
-        telegramClient.sendMessage(kz.innlab.authservice.auth.dto.TelegramMessageDto(message))
-        return buildErrorResponse(exception, "Unknown error occurred", HttpStatus.INTERNAL_SERVER_ERROR, request)
     }
 
     private fun buildErrorResponse(

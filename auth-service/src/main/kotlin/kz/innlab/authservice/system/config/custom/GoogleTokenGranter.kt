@@ -1,13 +1,16 @@
 package kz.innlab.authservice.system.config.custom
 
-import kz.innlab.authservice.service.security.AbstractProviderService
+import kz.innlab.authservice.system.service.security.AbstractProviderService
 import org.springframework.security.authentication.AccountStatusException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.oauth2.common.exceptions.InvalidGrantException
 import org.springframework.security.oauth2.provider.*
+import org.springframework.security.oauth2.provider.endpoint.TokenEndpoint
 import org.springframework.security.oauth2.provider.token.AbstractTokenGranter
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices
+import java.util.*
+import kotlin.collections.LinkedHashMap
 
 class GoogleTokenGranter : AbstractTokenGranter {
     private val GRANT_TYPE = "google"
@@ -35,9 +38,18 @@ class GoogleTokenGranter : AbstractTokenGranter {
     override fun getOAuth2Authentication(client: ClientDetails, tokenRequest: TokenRequest): OAuth2Authentication? {
         val parameters: MutableMap<String?, String?> = LinkedHashMap(tokenRequest.requestParameters)
         val googleToken = parameters["token"] ?: ""
+        val firstName = parameters["firstName"]
+        val lastName = parameters["lastName"]
+        val roleType = (parameters["role"] ?: "STUDENT").uppercase()
+
         return try {
-            val user = this.providerService.checkToken(googleToken)
-            val userAuth: Authentication = UsernamePasswordAuthenticationToken(user.email, null)
+            val newUserDto = this.providerService.checkToken(googleToken)
+            newUserDto.firstName = firstName
+            newUserDto.lastName = lastName
+            val userId = this.providerService.getUserCreateIfNotExists(
+                newUserDto, roleType
+            )
+            val userAuth: Authentication = UsernamePasswordAuthenticationToken(userId, null)
             val storedOAuth2Request = requestFactory.createOAuth2Request(client, tokenRequest)
             OAuth2Authentication(storedOAuth2Request, userAuth)
         } catch (var8: AccountStatusException) {

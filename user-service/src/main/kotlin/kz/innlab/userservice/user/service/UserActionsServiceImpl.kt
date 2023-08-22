@@ -3,6 +3,7 @@ package kz.innlab.userservice.user.service
 import freemarker.template.Configuration
 import freemarker.template.Template
 import kz.innlab.userservice.system.client.AuthServiceClient
+import kz.innlab.userservice.system.dto.EmailChangeDTO
 import kz.innlab.userservice.system.dto.MailMessageDto
 import kz.innlab.userservice.system.service.MailService
 import kz.innlab.userservice.user.dto.PasswordDTO
@@ -29,9 +30,20 @@ class UserActionsServiceImpl: UserActionsService {
     @Autowired
     lateinit var userService: UserService
 
-    override fun sendResetPasswordLink(email: String): Status {
+    override fun changePassword(principal: Principal, passwordDTO: PasswordDTO): Status {
+        var status = Status()
+        userService.getUserById(UUID.fromString(principal.name)).ifPresentOrElse({
+            passwordDTO.userId = it.id
+            status = authClient.changePassword(passwordDTO)
+        }, {
+            status.message = "Can not find User"
+        })
+        return status
+    }
+
+    override fun sendVerifyCodeToEmail(email: String): Status {
         val status = Status()
-        val resetPasswordLink = authClient.resetPassword(email)
+        val resetPasswordLink = authClient.generateCode(email)
         if (resetPasswordLink.isNullOrBlank()) {
             status.value = "Cannot find user"
         } else {
@@ -61,18 +73,22 @@ class UserActionsServiceImpl: UserActionsService {
         return status
     }
 
-    override fun changeUserPasswordToken(passwordDto: PasswordDTO): Status {
-        return authClient.changePasswordToken(passwordDto)
+    override fun changePasswordByToken(passwordDto: PasswordDTO): Status {
+        return authClient.changePasswordByToken(passwordDto)
     }
 
-    override fun validatePasswordResetToken(token: String): Status {
-        return authClient.showChangePasswordPage(token)
+    override fun verifyUserEmail(email: EmailChangeDTO): Status {
+        return authClient.verifyEmail(email)
+    }
+
+    override fun changeUserEmail(emailDto: EmailChangeDTO): Status {
+        return authClient.verifyEmail(emailDto)
     }
 
     override fun hasRole(roles: List<String>, username: String): Status {
         val status = Status()
         try {
-            val user = userService.getUserById(UUID.fromString(username))
+            val user = userService.getUserByIdForService(UUID.fromString(username))
             if (user.isPresent) {
                 if (roles.isEmpty()) {
                     status.status = 1
@@ -98,16 +114,5 @@ class UserActionsServiceImpl: UserActionsService {
 
     override fun changeStatusBlocked(statusFilter: MutableMap<String, String>): Status {
         return userService.changeStatusBlocked(statusFilter)
-    }
-
-    override fun changePassword(principal: Principal, passwordDTO: PasswordDTO): Status {
-        var status = Status()
-        userService.getUserById(UUID.fromString(principal.name)).ifPresentOrElse({
-            passwordDTO.userId = it.id
-            status = authClient.changePassword(passwordDTO)
-        }, {
-            status.message = "Can not find User"
-        })
-        return status
     }
 }

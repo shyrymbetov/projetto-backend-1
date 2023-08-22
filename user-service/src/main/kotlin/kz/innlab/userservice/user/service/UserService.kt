@@ -4,6 +4,7 @@ import kz.innlab.userservice.user.dto.RegistrationUserDto
 import kz.innlab.userservice.user.dto.Status
 import kz.innlab.userservice.user.model.User
 import kz.innlab.userservice.user.dto.UserRequest
+import kz.innlab.userservice.user.dto.UserResponse
 import java.util.*
 
 /**
@@ -12,10 +13,12 @@ import java.util.*
  */
 interface UserService {
 
-    fun getUserById(id: UUID): Optional<User>
-    fun getUserListByIds(ids: List<UUID>): ArrayList<User>
-    fun getUserListByIdsArchive(ids: List<UUID>): ArrayList<User>
-    fun getUserListByRoles(roles:  List<String>): ArrayList<User>
+    fun getUserById(id: UUID): Optional<UserResponse>
+    fun getUserByIdForService(id: UUID): Optional<User>
+    fun getUserList(): List<UserResponse>
+    fun getUserListByIds(ids: List<UUID>): List<UserResponse>
+    fun getUserListByIdsArchive(ids: List<UUID>): List<UserResponse>
+    fun getUserListByRoles(roles:  List<String>): List<UserResponse>
 
     fun createNewUser(user: UserRequest): Status
     fun saveChanges(user: UserRequest): Status
@@ -26,7 +29,7 @@ interface UserService {
     fun restore(id: UUID): Status
 
     //Current User
-    fun getCurrentUser(name: String): Optional<User>
+    fun getCurrentUser(name: String): Optional<UserResponse>
     fun registration(user: RegistrationUserDto): Status
     fun saveChangesCurrentUser(user: UserRequest, username: String): Status
     fun deleteCurrentUser(name: String): Status

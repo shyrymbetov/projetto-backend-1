@@ -12,10 +12,12 @@ import java.util.*
 interface UserService {
 
     fun getUserById(id: UUID): Optional<User>
+    fun getUserByEmailIgnoreCage(email: String): Optional<User>
     fun getUserListByIds(ids: List<UUID>): ArrayList<User>
     fun getUserListByIdsArchive(ids: List<UUID>): ArrayList<User>
     fun getUserListByRoles(roles:  List<String>): ArrayList<User>
 
+    fun create(user: User, roles: List<String>): UUID?
     fun createNewUser(user: UserRequest): Status
     fun saveChanges(user: UserRequest): Status
 

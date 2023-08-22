@@ -27,17 +27,17 @@ class ReviewController {
         return service.getReviewList()
     }
 
-    @PostMapping("/create")
+    @PostMapping("")
     @PreAuthorize("#oauth2.hasScope('server') or isAuthenticated()")
     fun createReview(@RequestBody review: Review): ResponseEntity<*> {
         return ResponseEntity(service.createReview(review), HttpStatus.OK)
     }
 
-    @PostMapping("/edit")
+    @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    fun editReview(@RequestBody review: Review): ResponseEntity<*> {
-        return ResponseEntity(service.
-        editReview(review), HttpStatus.OK)
+    fun editReview(@PathVariable id: UUID, @RequestBody review: Review): ResponseEntity<*> {
+        review.id = id
+        return ResponseEntity(service.editReview(review), HttpStatus.OK)
     }
 
     @DeleteMapping("/delete/{id}")

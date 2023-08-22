@@ -73,7 +73,7 @@ class User: Auditable<String?>() {
     @Column(name = "PASSWORD", columnDefinition = "character varying", nullable = false)
     var password: String = ""
 
-    var enabled: Boolean? = null
+    var enabled: Boolean? = null // a emailVerify
     var blocked: Timestamp? = null
     var blockCodeSend: Timestamp? = null
     var receivingFailedCountCode: Int? = 0
