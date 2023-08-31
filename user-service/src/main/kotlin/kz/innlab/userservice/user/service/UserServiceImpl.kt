@@ -141,7 +141,6 @@ class UserServiceImpl : UserService {
         user.roles = arrayListOf(user.type.toString())
         try {
             val newUser = userRequestToUser(user)
-            newUser.enabled = true
             newUser.firstName = user.firstName
             newUser.lastName = user.lastName
             newUser.email = user.email ?: ""

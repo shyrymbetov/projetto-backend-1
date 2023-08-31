@@ -28,10 +28,8 @@ interface AuthServiceClient {
     fun changePasswordByToken(@Valid @RequestBody passwordDto: PasswordDTO): Status
 
     @PostMapping("/security/email-verify")
-    @PreAuthorize("#oauth2.hasScope('server') or hasRole('ADMIN')")
     fun verifyEmail(@Valid @RequestBody emailDto: EmailChangeDTO): Status
 
     @PostMapping("/security/change-email")
-    @PreAuthorize("#oauth2.hasScope('server') or hasRole('ADMIN')")
     fun changeEmail(@Valid @RequestBody emailDto: EmailChangeDTO): Status
 }
