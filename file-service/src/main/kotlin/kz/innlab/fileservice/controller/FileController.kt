@@ -25,11 +25,11 @@ class FileController {
     lateinit var fileService: FileService
 
     @GetMapping("/download/{id}")
-    @PreAuthorize("isAuthenticated()")
+//    @PreAuthorize("isAuthenticated()")
     fun getDownloadFile(
         @PathVariable(value = "id") id: UUID,
         @RequestParam(value = "filename") filename: String,
-        authentication: Authentication
+//        authentication: Authentication
     ): ResponseEntity<*> {
         val file = fileService.getFile(id)
         if (file.isEmpty) {

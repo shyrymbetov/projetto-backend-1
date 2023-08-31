@@ -20,6 +20,8 @@ class BookTest: Auditable<String?>() {
 //    @Enumerated(EnumType.STRING)
     var complexity: String? = null
 
+    var duration: Long? = null
+
     @OneToMany
     @JoinColumn(name = "testId", insertable = true, updatable = true)
     var questions: Set<TestQuestions> = setOf()

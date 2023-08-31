@@ -8,19 +8,7 @@ import org.springframework.context.annotation.Configuration
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix = "security.authentication")
 class SecurityConfigurationProperties {
-    var registration = Registration()
     var authorization = Authorization()
-    var resetPassword = ResetPassword()
-
-    inner class Registration {
-        var duration: Long? = 0
-        var failedCount: Int? = 0
-    }
-
-    inner class ResetPassword {
-        var duration: Int? = 0
-        var failedCount: Int? = 0
-    }
 
     inner class Authorization {
         var failedCount: Int? = 0

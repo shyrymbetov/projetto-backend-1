@@ -1,6 +1,6 @@
 package kz.innlab.bookservice.test.model
 
-import com.vladmihalcea.hibernate.type.array.StringArrayType
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType
 import kz.innlab.bookservice.system.model.Auditable
 import org.hibernate.annotations.Type
 import org.hibernate.annotations.TypeDef
@@ -12,9 +12,9 @@ import javax.persistence.*
 @Table(name = "book_test_questions")
 @TypeDefs(
     TypeDef(
-        name = "string-array",
-        typeClass = StringArrayType::class
-    ),
+        name = "jsonb",
+        typeClass = JsonBinaryType::class
+    )
 )
 class TestQuestions: Auditable<String?>() {
     @Id
@@ -27,12 +27,10 @@ class TestQuestions: Auditable<String?>() {
 
     var description: String? = null
 
-    @Type(type = "string-array")
-    @Column(columnDefinition = "character varying[]")
-    var correctAnswers: ArrayList<String> = arrayListOf()
+    @Type(type = "jsonb")
+    var correctAnswers: ArrayList<Answer> = arrayListOf()
 
-    @Type(type = "string-array")
-    @Column(columnDefinition = "character varying[]")
-    var wrongAnswers: ArrayList<String> = arrayListOf()
+    @Type(type = "jsonb")
+    var wrongAnswers: ArrayList<Answer> = arrayListOf()
 
 }
