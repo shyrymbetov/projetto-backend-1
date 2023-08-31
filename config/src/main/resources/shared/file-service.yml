@@ -20,7 +20,7 @@ spring:
       enabled: true
       max-file-size: 100MB
       max-request-size: 100MB
-      location: C:\Users\Nurzhan\Desktop\softbooks
+      location: /Users/nurzhankongratbayev/Documents/GitHub/softbooks
 
 server:
   servlet:
