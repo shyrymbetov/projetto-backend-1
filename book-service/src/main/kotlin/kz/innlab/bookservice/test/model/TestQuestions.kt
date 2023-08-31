@@ -29,10 +29,10 @@ class TestQuestions: Auditable<String?>() {
 
     @Type(type = "string-array")
     @Column(columnDefinition = "character varying[]")
-    var correctAnswers: ArrayList<String> = arrayListOf()
+    var correctAnswers: Array<String> = arrayOf()
 
     @Type(type = "string-array")
     @Column(columnDefinition = "character varying[]")
-    var wrongAnswers: ArrayList<String> = arrayListOf()
+    var wrongAnswers: Array<String> = arrayOf()
 
 }

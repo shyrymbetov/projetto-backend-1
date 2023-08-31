@@ -4,6 +4,7 @@ import kz.innlab.bookservice.system.model.Auditable
 import lombok.Builder
 import java.util.*
 import javax.persistence.*
+import kotlin.jvm.Transient
 
 @Entity
 @Table(name = "book_test")
@@ -20,7 +21,6 @@ class BookTest: Auditable<String?>() {
 //    @Enumerated(EnumType.STRING)
     var complexity: String? = null
 
-    @OneToMany
-    @JoinColumn(name = "testId", insertable = true, updatable = true)
-    var questions: Set<TestQuestions> = setOf()
+    @Transient
+    var questions: List<TestQuestions> = listOf()
 }

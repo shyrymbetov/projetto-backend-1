@@ -31,7 +31,10 @@ class BookTestServiceImpl: BookTestService {
     }
 
     override fun getBookTestById(id: UUID, name: String): Optional<BookTest> {
-        return repository.findByIdAndDeletedAtIsNull(id)
+        val questions = questionRepository.findByTestIdAndDeletedAtIsNull(id)
+        val bookTest = repository.findByIdAndDeletedAtIsNull(id)
+        bookTest.ifPresent { b -> b.questions = questions }
+        return bookTest
     }
 
     override fun createBookTest(book: BookTest, userId: String): Status {
@@ -41,6 +44,7 @@ class BookTestServiceImpl: BookTestService {
 //            return status
 //        }
         repository.save(book)
+
         book.questions.forEach {question ->
             question.testId = book.id
             questionRepository.save(question)
