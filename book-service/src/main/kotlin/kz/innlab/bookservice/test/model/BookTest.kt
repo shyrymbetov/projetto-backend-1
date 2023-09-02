@@ -18,6 +18,8 @@ class BookTest: Auditable<String?>() {
 
     var name: String? = null
 
+    var duration: Long? = null
+
 //    @Enumerated(EnumType.STRING)
     var complexity: String? = null
 
