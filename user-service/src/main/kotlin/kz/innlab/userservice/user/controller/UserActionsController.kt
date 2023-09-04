@@ -45,7 +45,6 @@ class UserActionsController {
     }
 
     @PostMapping("/email-verify")
-    @PreAuthorize("#oauth2.hasScope('server') or hasRole('ADMIN')")
     fun verifyEmail(
         @Valid @RequestBody emailDto: EmailChangeDTO
     ): Status {
@@ -53,7 +52,7 @@ class UserActionsController {
     }
 
     @PostMapping("/change-email")
-    @PreAuthorize("#oauth2.hasScope('server') or hasRole('ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     fun changeEmail(
         @Valid @RequestBody emailDto: EmailChangeDTO
     ): Status {
@@ -67,7 +66,6 @@ class UserActionsController {
     }
 
     @PostMapping("/has-email")
-    @PreAuthorize("isAuthenticated()")
     fun checkEmailAndPhone(@Valid @RequestBody newUserRequest: UserRequest): ResponseEntity<*> {
         return ResponseEntity(service.checkEmail(newUserRequest), HttpStatus.OK)
     }

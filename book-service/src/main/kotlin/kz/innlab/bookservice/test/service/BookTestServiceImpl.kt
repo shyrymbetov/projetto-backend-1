@@ -6,6 +6,7 @@ import kz.innlab.bookservice.hyperlink.repository.BookHyperlinkRepository
 import kz.innlab.bookservice.system.service.PermissionService
 import kz.innlab.bookservice.test.model.BookTest
 import kz.innlab.bookservice.test.repository.BookTestRepository
+import kz.innlab.bookservice.test.repository.TestQuestionsRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -20,6 +21,9 @@ class BookTestServiceImpl: BookTestService {
     lateinit var repository: BookTestRepository
 
     @Autowired
+    lateinit var questionRepository: TestQuestionsRepository
+
+    @Autowired
     lateinit var permissionService: PermissionService
 
     override fun getBookTestByBookId(bookId: UUID, name: String): List<BookTest> {
@@ -27,7 +31,10 @@ class BookTestServiceImpl: BookTestService {
     }
 
     override fun getBookTestById(id: UUID, name: String): Optional<BookTest> {
-        return repository.findByIdAndDeletedAtIsNull(id)
+        val questions = questionRepository.findByTestIdAndDeletedAtIsNull(id)
+        val bookTest = repository.findByIdAndDeletedAtIsNull(id)
+        bookTest.ifPresent { b -> b.questions = questions }
+        return bookTest
     }
 
     override fun createBookTest(book: BookTest, userId: String): Status {
@@ -37,6 +44,11 @@ class BookTestServiceImpl: BookTestService {
 //            return status
 //        }
         repository.save(book)
+
+        book.questions.forEach {question ->
+            question.testId = book.id
+            questionRepository.save(question)
+        }
         status.status = 1
         status.message= String.format("Book: %s has been created", book.name)
         status.value = book.id
@@ -51,6 +63,10 @@ class BookTestServiceImpl: BookTestService {
 //            return status
 //        }
         repository.findByIdAndDeletedAtIsNull(newBook.id!!).ifPresentOrElse({
+
+            newBook.questions.forEach {question ->
+                questionRepository.save(question)
+            }
 
             repository.save(newBook)
             status.status = 1

@@ -26,11 +26,12 @@ class TestQuestions: Auditable<String?>() {
     var index: Int? = null
 
     var description: String? = null
+  
+    @Type(type = "string-array")
+    @Column(columnDefinition = "character varying[]")
+    var correctAnswers: Array<String> = arrayOf()
 
-    @Type(type = "jsonb")
-    var correctAnswers: ArrayList<Answer> = arrayListOf()
-
-    @Type(type = "jsonb")
-    var wrongAnswers: ArrayList<Answer> = arrayListOf()
-
+    @Type(type = "string-array")
+    @Column(columnDefinition = "character varying[]")
+    var wrongAnswers: Array<String> = arrayOf()
 }
