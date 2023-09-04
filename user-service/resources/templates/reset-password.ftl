@@ -7,11 +7,6 @@
             <tbody>
             <tr>
                 <td>
-                    <img class="logo" src="https://i.ibb.co/3CBpVp2/logo-mugalim.webp" alt="" height="32">
-                </td>
-            </tr>
-            <tr>
-                <td>
                     <h3>Ваш код для восстановления пароля</h3>
                 </td>
             </tr>
@@ -57,21 +52,6 @@
                     <p class="comand">Спасибо, <br> Команда InnLab</p>
                 </td>
             </tr>
-            <tr>
-                <td>
-                    <p style="width: 540px;" class="margin">Mugalim app в одном клике от вас! Скачивайте наше приложение в
-                        Play Market и App Store.</p>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <div>
-                        <a href=""><img src="https://i.ibb.co/ZSfcBRF/google-play-badge.webp" alt="" height="32"></a>
-                        <a href=""><img src="https://i.ibb.co/s6ny98J/app-store.webp" alt="" height="32"></a>
-                    </div>
-                </td>
-            </tr>
-
             <tr>
                 <td>
                     <div class="question">
