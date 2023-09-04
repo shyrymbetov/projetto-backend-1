@@ -9,15 +9,15 @@ spring:
     debug: true
     default-encoding: UTF-8
 
-    host: smtp.mail.ru
-    password: 5qLimVtwQ6XRen5habnS
+    host: smtp.gmail.com
+    password: oknxmkzxhjqjdcbu
     port: 465
     protocol: smtps
     smtp:
       auth: true
       starttls:
         enable: true
-    username: innlab@gmail.com
+    username: kongratbaev.77.7@gmail.com
 
 server:
   servlet:
