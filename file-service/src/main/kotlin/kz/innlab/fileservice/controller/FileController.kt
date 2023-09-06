@@ -54,6 +54,25 @@ class FileController {
         return ResponseEntity("File not exists", HttpStatus.BAD_REQUEST)
     }
 
+    @GetMapping("/word")
+//    @PreAuthorize("isAuthenticated()")
+    fun getWordFile(): ResponseEntity<*> {
+        val pathToFile = fileService.getFullPathWord()
+        if (FileService.fileExists(pathToFile)) {
+            val resource = InputStreamResource(FileInputStream(pathToFile))
+
+            val httpHeaders = HttpHeaders()
+            val contentDisposition = ContentDisposition.builder("attachment")
+                .filename("demo.docx", StandardCharsets.UTF_8)
+                .build()
+            httpHeaders.contentDisposition = contentDisposition
+            httpHeaders.contentType = FileService.contentTypeFromMime("application/msword", MediaType.APPLICATION_OCTET_STREAM)
+            return ResponseEntity(resource, httpHeaders, HttpStatus.OK)
+        }
+
+        return ResponseEntity("File not exists", HttpStatus.BAD_REQUEST)
+    }
+
     @PostMapping("upload")
     @PreAuthorize("isAuthenticated()")
     fun uploadFile(
