@@ -41,6 +41,10 @@ class FileService {
         return getFilesPath(uploadPath, fileModel.createdAt) + fileModel.id
     }
 
+    fun getFullPathWord(): String {
+        return  "$uploadPath/word/demo.docx"
+    }
+
     fun saveFile(multipartFile: MultipartFile): UUID? {
         val file: File = multipartFileToFile(multipartFile, "$uploadPath/tmp/")
         val hashFile = sha256Checksum(file)
