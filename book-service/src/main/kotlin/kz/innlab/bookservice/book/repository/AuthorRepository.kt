@@ -5,4 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import java.util.*
 
 interface AuthorRepository: JpaRepository<Author, UUID> {
+    fun findAllByBookIdAndDeletedAtIsNull(bookId: UUID): List<Author>
+    fun findAllByIdInAndDeletedAtIsNull(ids: List<UUID>): List<Author>
+    fun findAllByUserIdAndDeletedAtIsNull(fromString: UUID): List<Author>
 }

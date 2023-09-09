@@ -40,7 +40,7 @@ class GoogleTokenGranter : AbstractTokenGranter {
         val googleToken = parameters["token"] ?: ""
         val firstName = parameters["firstName"]
         val lastName = parameters["lastName"]
-        val roleType = (parameters["role"] ?: "STUDENT").uppercase()
+        val roleType = (parameters["type"] ?: "STUDENT").uppercase()
 
         return try {
             val newUserDto = this.providerService.checkToken(googleToken)
