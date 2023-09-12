@@ -40,11 +40,11 @@ class RoleController {
         return roleService.getList()
     }
 
-    @PostMapping("/")
-//    @PreAuthorize("#oauth2.hasScope('server')")
-    fun createRoles(): Status {
-        return roleService.createRoles()
-    }
+//    @PostMapping("/")
+////    @PreAuthorize("#oauth2.hasScope('server')")
+//    fun createRoles(): Status {
+//        return roleService.createRoles()
+//    }
 
 //    @GetMapping("/priority/{userName}")
 //    @PreAuthorize("#oauth2.hasScope('server')")

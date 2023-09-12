@@ -67,4 +67,9 @@ class UserController {
     fun removeAccount(@PathVariable(value = "id") id: UUID): Status {
         return userService.moveToTrash(id)
     }
+
+    @DeleteMapping("/")
+    fun removeAllAccount(): Status {
+        return userService.deleteAllAccounts()
+    }
 }
