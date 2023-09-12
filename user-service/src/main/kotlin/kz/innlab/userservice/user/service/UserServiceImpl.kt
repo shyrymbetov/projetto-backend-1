@@ -161,7 +161,7 @@ class UserServiceImpl : UserService {
     }
 
     override fun deleteAllAccounts(): Status {
-        repository.deleteAll()
+//        repository.deleteAll()
         return Status(1, "Success")
     }
 
