@@ -8,7 +8,7 @@ import java.util.*
 
 interface BookService {
     fun getBookList(params: MutableMap<String, String>, pageR: PageRequest): Page<Books>
-    fun getBookListMy(params: MutableMap<String, String>, name: String?): List<Books>
+    fun getBookListMy(params: MutableMap<String, String>, name: String): List<Books>
     fun getBookById(id: UUID): Optional<Books>
     fun createBook(book: Books, userId: String): Status
     fun editBook(book: Books, userId: String): Status

@@ -2,7 +2,10 @@ package kz.innlab.bookservice.book.service
 
 import kz.innlab.bookservice.book.dto.Status
 import kz.innlab.bookservice.book.model.Books
+import kz.innlab.bookservice.book.repository.AuthorRepository
 import kz.innlab.bookservice.book.repository.BookRepository
+import kz.innlab.bookservice.book.repository.BookSpecification.Companion.author
+import kz.innlab.bookservice.book.repository.BookSpecification.Companion.bookIdIn
 import kz.innlab.bookservice.book.repository.BookSpecification.Companion.containsName
 import kz.innlab.bookservice.book.repository.BookSpecification.Companion.deletedAtIsNull
 import kz.innlab.bookservice.system.service.PermissionService
@@ -15,7 +18,7 @@ import java.sql.Timestamp
 import java.util.*
 
 @Service
-class BookServiceImpl: BookService {
+class BookServiceImpl : BookService {
     private var log = LoggerFactory.getLogger(javaClass)
 
     @Autowired
@@ -34,19 +37,30 @@ class BookServiceImpl: BookService {
         val filterName = params["name"] ?: ""
 
         return repository.findAll(
-            deletedAtIsNull().and(containsName(filterName)), pageR
+            deletedAtIsNull()
+                .and(containsName(filterName)), pageR
         )
     }
 
-    override fun getBookListMy(params: MutableMap<String, String>, name: String?): List<Books> {
-        return repository.findAll(
-            deletedAtIsNull()
-        )
+    override fun getBookListMy(params: MutableMap<String, String>, name: String): List<Books> {
+        var condition =deletedAtIsNull()
+        if (params["list"] == "coauthor") {
+            val bookIds = authorService.getBookIdsByAuthor(name)
+            condition = condition.and(bookIdIn(bookIds))
+        } else {
+            condition = condition.and(author(UUID.fromString(name)))
+        }
+        println(name)
+        return repository.findAll(condition)
     }
 
 
     override fun getBookById(id: UUID): Optional<Books> {
-        return repository.findByIdAndDeletedAtIsNull(id)
+        val book = repository.findByIdAndDeletedAtIsNull(id)
+        book.ifPresent {
+            it.coauthors = authorService.getAuthorsByBookId(id)
+        }
+        return book
     }
 
     override fun createBook(book: Books, userId: String): Status {
@@ -56,8 +70,10 @@ class BookServiceImpl: BookService {
 //            return status
 //        }
         repository.save(book)
+        authorService.createAuthors(book.id!!, book.coauthors)
+
         status.status = 1
-        status.message= String.format("Book: %s has been created", book.name)
+        status.message = String.format("Book: %s has been created", book.name)
         status.value = book.id
         log.info(String.format("Book: %s has been created", book.name))
         return status
@@ -70,6 +86,9 @@ class BookServiceImpl: BookService {
 //            return status
 //        }
         repository.findByIdAndDeletedAtIsNull(newBook.id!!).ifPresentOrElse({
+
+            authorService.editAuthors(newBook.coauthors, newBook.id!!)
+
             it.name = newBook.name
             it.description = newBook.description
             it.avatarId = newBook.avatarId
@@ -78,7 +97,7 @@ class BookServiceImpl: BookService {
             status.message = String.format("Book %s has been edited", it.id)
             log.info(String.format("Book %s has been edited", it.id))
             status.value = it.id
-        },{
+        }, {
 
             status.message = String.format("Book %s does not exist", newBook.id)
             log.info(String.format("Book %s does not exist", newBook.id))
@@ -96,6 +115,8 @@ class BookServiceImpl: BookService {
         status.message = String.format("Book %s does not exist", id)
         repository.findByIdAndDeletedAtIsNull(id)
             .ifPresent {
+                authorService.deleteAuthorsByBookId(id)
+
                 it.deletedAt = Timestamp(System.currentTimeMillis())
                 repository.save(it)
                 status.status = 1

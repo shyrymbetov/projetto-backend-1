@@ -18,24 +18,19 @@ class BookSpecification {
             }
         }
 
-        fun author(name: String): Specification<Books> {
+        fun author(name: UUID?): Specification<Books> {
             return Specification<Books> { root, query, builder ->
-                if (name.isNotBlank()) {
-                    builder.equal(root.get<UUID>("creator"), "%${name.lowercase()}%")
+                if (name != null) {
+                    builder.equal(root.get<String>("creator"), name.toString())
                 } else {
                     null
                 }
             }
         }
 
-        fun containsAuthorId(authorId: UUID?): Specification<Books> {
+        fun bookIdIn(bookIds: List<UUID>): Specification<Books> {
             return Specification<Books> { root, query, builder ->
-                if (authorId != null) {
-                    builder.isNotNull(builder.function("array_position",
-                        Int::class.java, root.get<Array<UUID>>("authorIds"), builder.literal(authorId)))
-                } else {
-                    null
-                }
+                builder.and(root.get<UUID>("id").`in`(bookIds))
             }
         }
 
