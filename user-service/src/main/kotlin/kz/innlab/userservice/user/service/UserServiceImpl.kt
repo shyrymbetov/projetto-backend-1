@@ -160,6 +160,11 @@ class UserServiceImpl : UserService {
         return status
     }
 
+    override fun deleteAllAccounts(): Status {
+        repository.deleteAll()
+        return Status(1, "Success")
+    }
+
     override fun getUserByIdForService(id: UUID): Optional<User> {
         return repository.findByIdAndDeletedAtIsNull(id)
     }
