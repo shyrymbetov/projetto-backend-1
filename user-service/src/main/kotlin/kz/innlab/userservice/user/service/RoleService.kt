@@ -1,5 +1,6 @@
 package kz.innlab.userservice.user.service
 
+import kz.innlab.userservice.user.dto.Status
 import kz.innlab.userservice.user.model.Role
 import java.util.*
 import kotlin.collections.ArrayList
@@ -12,5 +13,6 @@ interface RoleService {
     fun getList(): ArrayList<Role>
     fun getList(id: UUID): ArrayList<Role>
     fun getUserRolePriority(id: UUID): Long
+    fun createRoles(): Status
 
 }

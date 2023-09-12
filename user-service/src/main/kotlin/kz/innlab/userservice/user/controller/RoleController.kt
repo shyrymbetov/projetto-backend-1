@@ -1,5 +1,6 @@
 package kz.innlab.userservice.user.controller
 
+import kz.innlab.userservice.user.dto.Status
 import kz.innlab.userservice.user.model.Role
 import kz.innlab.userservice.user.service.RoleService
 import org.springframework.beans.factory.annotation.Autowired
@@ -37,6 +38,12 @@ class RoleController {
     @PreAuthorize("#oauth2.hasScope('server')")
     fun getList(): ArrayList<Role> {
         return roleService.getList()
+    }
+
+    @PostMapping("/")
+//    @PreAuthorize("#oauth2.hasScope('server')")
+    fun createRoles(): Status {
+        return roleService.createRoles()
     }
 
 //    @GetMapping("/priority/{userName}")

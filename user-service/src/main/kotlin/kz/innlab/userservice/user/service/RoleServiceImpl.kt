@@ -1,5 +1,6 @@
 package kz.innlab.userservice.user.service
 
+import kz.innlab.userservice.user.dto.Status
 import kz.innlab.userservice.user.model.Role
 import kz.innlab.userservice.user.repository.RoleRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -48,5 +49,22 @@ class RoleServiceImpl: RoleService {
             }
         }
         return userRolePriority
+    }
+
+    override fun createRoles(): Status {
+        val roles = arrayListOf("ADMIN", "TEACHER", "STUDENT")
+        roles.forEach { role ->
+            repository.findByNameIgnoreCaseAndDeletedAtIsNull(role).ifPresentOrElse(
+                {
+                    println("$role exists")
+                }, {
+                    val newRole = Role()
+                    newRole.name = role
+                    newRole.title = role
+                    repository.save(newRole)
+                }
+            )
+        }
+        return Status(1, "Success")
     }
 }
