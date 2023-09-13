@@ -59,6 +59,19 @@ class BookController {
         return ResponseEntity(service.editBook(book, principal.name), HttpStatus.OK)
     }
 
+    @PutMapping("/status/{id}")
+    @PreAuthorize("isAuthenticated()")
+    fun editStatusBook(@PathVariable id: UUID, @RequestBody book: Books, principal: Principal): ResponseEntity<*>{
+        book.id = id
+        return ResponseEntity(service.editStatusBook(book, principal.name), HttpStatus.OK)
+    }
+
+    @PostMapping("/status")
+    @PreAuthorize("isAuthenticated()")
+    fun editStatusBook(principal: Principal): ResponseEntity<*>{
+        return ResponseEntity(service.editStatusAllBooks(principal.name), HttpStatus.OK)
+    }
+
     @DeleteMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     fun deleteBook(@PathVariable id: UUID, principal: Principal): ResponseEntity<*>{

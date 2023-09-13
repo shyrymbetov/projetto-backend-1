@@ -1,7 +1,6 @@
 package kz.innlab.userservice.user.controller
 
 import kz.innlab.userservice.user.dto.*
-import kz.innlab.userservice.user.model.User
 import kz.innlab.userservice.user.service.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -29,6 +28,12 @@ class UserController {
     @PreAuthorize("#oauth2.hasScope('server') or hasRole('ADMIN')")
     fun getUserListByIds(): List<UserResponse> {
         return userService.getUserList()
+    }
+
+    @PostMapping("/author")
+    @PreAuthorize("isAuthenticated()")
+    fun getUserAuthorsListByFullName(@Valid @RequestBody search: String? = ""): List<UserShortDto> {
+        return userService.getUserAuthorsListByFullName(search)
     }
 
     @GetMapping("/{id}")

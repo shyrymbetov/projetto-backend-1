@@ -7,4 +7,5 @@ import java.util.*
 interface TestQuestionsRepository: JpaRepository<TestQuestions, UUID> {
     fun findByTestIdAndDeletedAtIsNull(bookId: UUID): List<TestQuestions>
     fun findByIdAndDeletedAtIsNull(id: UUID): Optional<TestQuestions>
+    fun findByTestIdInAndDeletedAtIsNull(mapNotNull: List<UUID>): List<TestQuestions>
 }

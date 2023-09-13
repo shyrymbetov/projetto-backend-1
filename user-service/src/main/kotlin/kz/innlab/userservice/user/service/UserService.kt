@@ -1,10 +1,7 @@
 package kz.innlab.userservice.user.service
 
-import kz.innlab.userservice.user.dto.RegistrationUserDto
-import kz.innlab.userservice.user.dto.Status
+import kz.innlab.userservice.user.dto.*
 import kz.innlab.userservice.user.model.User
-import kz.innlab.userservice.user.dto.UserRequest
-import kz.innlab.userservice.user.dto.UserResponse
 import java.util.*
 
 /**
@@ -14,6 +11,7 @@ import java.util.*
 interface UserService {
 
     fun getUserById(id: UUID): Optional<UserResponse>
+    fun getUserAuthorsListByFullName(search: String?): List<UserShortDto>
     fun getUserByIdForService(id: UUID): Optional<User>
     fun getUserList(): List<UserResponse>
     fun getUserListByIds(ids: List<UUID>): List<UserResponse>
