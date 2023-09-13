@@ -1,11 +1,14 @@
 package kz.innlab.bookservice.book.service
 
+import kz.innlab.bookservice.book.dto.BookStatusEnum
 import kz.innlab.bookservice.book.dto.Status
 import kz.innlab.bookservice.book.model.Books
 import kz.innlab.bookservice.book.repository.AuthorRepository
 import kz.innlab.bookservice.book.repository.BookRepository
 import kz.innlab.bookservice.book.repository.BookSpecification.Companion.author
 import kz.innlab.bookservice.book.repository.BookSpecification.Companion.bookIdIn
+import kz.innlab.bookservice.book.repository.BookSpecification.Companion.bookStatusPublic
+import kz.innlab.bookservice.book.repository.BookSpecification.Companion.categoryEquals
 import kz.innlab.bookservice.book.repository.BookSpecification.Companion.containsName
 import kz.innlab.bookservice.book.repository.BookSpecification.Companion.deletedAtIsNull
 import kz.innlab.bookservice.system.service.PermissionService
@@ -34,23 +37,24 @@ class BookServiceImpl : BookService {
 //        if (!permissionService.permission(userId, "book-list", "read")) {
 //            return Page.empty()
 //        }
-        val filterName = params["name"] ?: ""
 
         return repository.findAll(
             deletedAtIsNull()
-                .and(containsName(filterName)), pageR
+                .and(categoryEquals(params["category"] ?: ""))
+                .and(containsName(params["name"] ?: ""))
+                .and(bookStatusPublic())
+            , pageR
         )
     }
 
     override fun getBookListMy(params: MutableMap<String, String>, name: String): List<Books> {
-        var condition =deletedAtIsNull()
+        var condition = deletedAtIsNull().and(containsName(params["name"] ?: ""))
         if (params["list"] == "coauthor") {
             val bookIds = authorService.getBookIdsByAuthor(name)
             condition = condition.and(bookIdIn(bookIds))
         } else {
             condition = condition.and(author(UUID.fromString(name)))
         }
-        println(name)
         return repository.findAll(condition)
     }
 
@@ -69,6 +73,7 @@ class BookServiceImpl : BookService {
 //            status.message = "Permission"
 //            return status
 //        }
+        book.status = BookStatusEnum.NOT_PUBLIC
         repository.save(book)
         authorService.createAuthors(book.id!!, book.coauthors)
 
@@ -104,6 +109,30 @@ class BookServiceImpl : BookService {
         })
 
         return status
+    }
+
+    override fun editStatusBook(book: Books, name: String): Status {
+        val status = Status()
+        repository.findByIdAndDeletedAtIsNull(book.id!!).ifPresentOrElse({
+            it.status = book.status
+            repository.save(it)
+            status.status = 1
+            status.message = String.format("Book %s has been edited", it.id)
+            log.info(String.format("Book %s has been edited", it.id))
+            status.value = it.id
+        }, {
+            status.message = String.format("Book %s does not exist", book.id)
+            log.info(String.format("Book %s does not exist", book.id))
+        })
+        return status
+    }
+
+    override fun editStatusAllBooks(name: String): Status {
+        repository.findAllByDeletedAtIsNull().forEach { book ->
+            book.status = BookStatusEnum.PUBLIC
+            repository.save(book)
+        }
+        return Status(1, "Success")
     }
 
     override fun deleteBook(id: UUID, userId: String): Status {

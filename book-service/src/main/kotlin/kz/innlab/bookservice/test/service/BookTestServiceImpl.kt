@@ -27,6 +27,16 @@ class BookTestServiceImpl: BookTestService {
     lateinit var permissionService: PermissionService
 
     override fun getBookTestByBookId(bookId: UUID, name: String): List<BookTest> {
+        val tests = repository.findAllByBookIdAndDeletedAtIsNull(bookId)
+
+        val questions = questionRepository.findByTestIdInAndDeletedAtIsNull(tests.mapNotNull { it.id })
+            .groupBy { it.testId }
+
+        tests.forEach {test ->
+            if (questions.containsKey(test.id)) {
+                test.questions = questions[test.id] ?: listOf()
+            }
+        }
         return repository.findAllByBookIdAndDeletedAtIsNull(bookId)
     }
 
@@ -37,46 +47,47 @@ class BookTestServiceImpl: BookTestService {
         return bookTest
     }
 
-    override fun createBookTest(book: BookTest, userId: String): Status {
+    override fun createBookTest(test: BookTest, userId: String): Status {
         val status = Status()
 //        if (!permissionService.permission(userId, "book-list",  "create")) {
 //            status.message = "Permission"
 //            return status
 //        }
-        repository.save(book)
+        repository.save(test)
 
-        book.questions.forEach {question ->
-            question.testId = book.id
+        test.questions.forEach {question ->
+            question.testId = test.id
             questionRepository.save(question)
         }
         status.status = 1
-        status.message= String.format("Book: %s has been created", book.name)
-        status.value = book.id
-        log.info(String.format("Book: %s has been created", book.name))
+        status.message= String.format("Book: %s has been created", test.name)
+        status.value = test.id
+        log.info(String.format("Book: %s has been created", test.name))
         return status
     }
 
-    override fun editBookTest(newBook: BookTest, userId: String): Status {
+    override fun editBookTest(test: BookTest, userId: String): Status {
         val status = Status()
 //        if (!permissionService.permission(userId, "book-list",  "update")) {
 //            status.message = "Permission"
 //            return status
 //        }
-        repository.findByIdAndDeletedAtIsNull(newBook.id!!).ifPresentOrElse({
+        repository.findByIdAndDeletedAtIsNull(test.id!!).ifPresentOrElse({
 
-            newBook.questions.forEach {question ->
+            test.questions.forEach {question ->
+                question.testId = test.id
                 questionRepository.save(question)
             }
 
-            repository.save(newBook)
+            repository.save(test)
             status.status = 1
             status.message = String.format("Book %s has been edited", it.id)
             log.info(String.format("Book %s has been edited", it.id))
             status.value = it.id
         },{
 
-            status.message = String.format("Book %s does not exist", newBook.id)
-            log.info(String.format("Book %s does not exist", newBook.id))
+            status.message = String.format("Book %s does not exist", test.id)
+            log.info(String.format("Book %s does not exist", test.id))
         })
 
         return status

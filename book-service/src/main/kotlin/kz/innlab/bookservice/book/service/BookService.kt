@@ -12,5 +12,7 @@ interface BookService {
     fun getBookById(id: UUID): Optional<Books>
     fun createBook(book: Books, userId: String): Status
     fun editBook(book: Books, userId: String): Status
+    fun editStatusBook(book: Books, name: String): Status
     fun deleteBook(id: UUID, userId: String): Status
+    fun editStatusAllBooks(name: String): Status
 }

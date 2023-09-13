@@ -4,12 +4,13 @@ import kz.innlab.userservice.user.model.User
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import java.util.*
 import kotlin.collections.ArrayList
 
-interface UserRepository: JpaRepository<User, UUID> {
+interface UserRepository: JpaRepository<User, UUID>, JpaSpecificationExecutor<User> {
     fun findByIdAndDeletedAtIsNull(id: UUID): Optional<User>
 
     fun findAllByDeletedAtIsNull(): List<User>

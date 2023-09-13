@@ -1,17 +1,19 @@
 package kz.innlab.userservice.user.service
 
-import kz.innlab.userservice.user.dto.RegistrationUserDto
-import kz.innlab.userservice.user.dto.Status
+import kz.innlab.userservice.user.dto.*
 import kz.innlab.userservice.user.model.User
 import kz.innlab.userservice.user.model.UsersRoles
-import kz.innlab.userservice.user.dto.UserRequest
-import kz.innlab.userservice.user.dto.UserResponse
 import kz.innlab.userservice.user.model.UserProviderType
 import kz.innlab.userservice.user.repository.RoleRepository
 import kz.innlab.userservice.user.repository.UserRepository
+import kz.innlab.userservice.user.repository.UserSpecification.Companion.containRoles
+import kz.innlab.userservice.user.repository.UserSpecification.Companion.deletedAtIsNull
+import kz.innlab.userservice.user.repository.UserSpecification.Companion.fioLike
 import kz.innlab.userservice.user.repository.UsersRolesRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import java.sql.Timestamp
@@ -253,6 +255,16 @@ class UserServiceImpl : UserService {
         status.status = 0
         status.message = "Email does not exists"
         return status
+    }
+
+    override fun getUserAuthorsListByFullName(search: String?): List<UserShortDto> {
+        val pageR: PageRequest = PageRequest.of(0, 10)
+        return repository.findAll(
+            deletedAtIsNull()
+                .and(fioLike(search?:""))
+                .and(containRoles("TEACHER"))
+            , pageR
+        ).content.map { UserShortDto(it.id, it.avatar, it.fio, it.fioShort) }
     }
 
     override fun changeStatusBlocked(statusFilter: MutableMap<String, String>): Status {

@@ -1,5 +1,6 @@
 package kz.innlab.bookservice.book.model
 
+import kz.innlab.bookservice.book.dto.BookStatusEnum
 import kz.innlab.bookservice.system.model.Auditable
 import java.util.*
 import javax.persistence.*
@@ -24,6 +25,11 @@ class Books: Auditable<String?>() {
     var subCategory: String? = null
 
     var avatarId: UUID? = null
+
+    var paid: Boolean? = false
+
+    @Enumerated(EnumType.STRING)
+    var status: BookStatusEnum? = BookStatusEnum.PUBLIC
 
     @Transient
     var coauthors: List<Author> = listOf()

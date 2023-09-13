@@ -1,5 +1,6 @@
 package kz.innlab.bookservice.book.repository
 
+import kz.innlab.bookservice.book.dto.BookStatusEnum
 import kz.innlab.bookservice.book.model.*
 import org.springframework.data.jpa.domain.Specification
 import java.sql.Timestamp
@@ -12,6 +13,22 @@ class BookSpecification {
             return Specification<Books> { root, query, builder ->
                 if (name.isNotBlank()) {
                     builder.like(builder.lower(root.get("name")), "%${name.lowercase()}%")
+                } else {
+                    null
+                }
+            }
+        }
+
+        fun bookStatusPublic(): Specification<Books> {
+            return Specification<Books> { root, query, builder ->
+                builder.equal(root.get<BookStatusEnum>("status"), BookStatusEnum.PUBLIC)
+            }
+        }
+
+        fun categoryEquals(category: String): Specification<Books> {
+            return Specification<Books> { root, query, builder ->
+                if (category.isNotBlank()) {
+                    builder.equal(builder.lower(root.get("category")), category.lowercase())
                 } else {
                     null
                 }
