@@ -6,7 +6,7 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
-@Table(name = "book_test")
+@Table(name = "book_abstacts")
 @Builder
 class BookAbstracts: Auditable<String?>() {
     @Id

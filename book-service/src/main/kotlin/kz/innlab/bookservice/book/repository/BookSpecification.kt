@@ -47,6 +47,16 @@ class BookSpecification {
 
         fun bookIdIn(bookIds: List<UUID>): Specification<Books> {
             return Specification<Books> { root, query, builder ->
+                if (bookIds.isEmpty()) {
+                    null
+                } else {
+                    builder.and(root.get<UUID>("id").`in`(bookIds))
+                }
+            }
+        }
+
+        fun bookIdInNotEmpty(bookIds: List<UUID>): Specification<Books> {
+            return Specification<Books> { root, query, builder ->
                 builder.and(root.get<UUID>("id").`in`(bookIds))
             }
         }

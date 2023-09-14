@@ -33,4 +33,7 @@ class Books: Auditable<String?>() {
 
     @Transient
     var coauthors: List<Author> = listOf()
+
+    @Transient
+    var favorite: Boolean = false
 }

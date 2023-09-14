@@ -40,7 +40,7 @@ class ReviewController {
         return ResponseEntity(service.editReview(review), HttpStatus.OK)
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     fun deleteReview(@PathVariable id: UUID): ResponseEntity<*> {
         return ResponseEntity(service.deleteReview(id), HttpStatus.OK)
