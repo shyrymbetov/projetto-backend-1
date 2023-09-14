@@ -3,14 +3,16 @@ package kz.innlab.bookservice.book.service
 import kz.innlab.bookservice.book.dto.BookStatusEnum
 import kz.innlab.bookservice.book.dto.Status
 import kz.innlab.bookservice.book.model.Books
-import kz.innlab.bookservice.book.repository.AuthorRepository
+import kz.innlab.bookservice.book.model.Favorite
 import kz.innlab.bookservice.book.repository.BookRepository
 import kz.innlab.bookservice.book.repository.BookSpecification.Companion.author
 import kz.innlab.bookservice.book.repository.BookSpecification.Companion.bookIdIn
+import kz.innlab.bookservice.book.repository.BookSpecification.Companion.bookIdInNotEmpty
 import kz.innlab.bookservice.book.repository.BookSpecification.Companion.bookStatusPublic
 import kz.innlab.bookservice.book.repository.BookSpecification.Companion.categoryEquals
 import kz.innlab.bookservice.book.repository.BookSpecification.Companion.containsName
 import kz.innlab.bookservice.book.repository.BookSpecification.Companion.deletedAtIsNull
+import kz.innlab.bookservice.book.repository.FavoriteRepository
 import kz.innlab.bookservice.system.service.PermissionService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -31,27 +33,42 @@ class BookServiceImpl : BookService {
     lateinit var authorService: AuthorService
 
     @Autowired
+    lateinit var favoriteRepository: FavoriteRepository
+
+    @Autowired
     lateinit var permissionService: PermissionService
 
-    override fun getBookList(params: MutableMap<String, String>, pageR: PageRequest): Page<Books> {
+    override fun getBookList(params: MutableMap<String, String>, pageR: PageRequest, username: String): Page<Books> {
 //        if (!permissionService.permission(userId, "book-list", "read")) {
 //            return Page.empty()
 //        }
 
-        return repository.findAll(
-            deletedAtIsNull()
-                .and(categoryEquals(params["category"] ?: ""))
-                .and(containsName(params["name"] ?: ""))
-                .and(bookStatusPublic())
-            , pageR
-        )
+        val favoriteBooks = favoriteRepository.findAllByUserIdAndDeletedAtIsNull(UUID.fromString(username)).map { it.bookId }
+
+        var condition = deletedAtIsNull()
+            .and(categoryEquals(params["category"] ?: ""))
+            .and(containsName(params["name"] ?: ""))
+            .and(bookStatusPublic())
+
+        if (params.containsKey("favor")) {
+            val bookIds = favoriteRepository.findAllByUserIdAndDeletedAtIsNull(UUID.fromString(username))
+                .mapNotNull { it.bookId }
+
+            condition = condition.and(bookIdInNotEmpty(bookIds))
+        }
+
+        val books = repository.findAll(condition, pageR)
+        books.forEach { book ->
+            book.favorite = favoriteBooks.contains(book.id)
+        }
+        return books
     }
 
     override fun getBookListMy(params: MutableMap<String, String>, name: String): List<Books> {
         var condition = deletedAtIsNull().and(containsName(params["name"] ?: ""))
         if (params["list"] == "coauthor") {
             val bookIds = authorService.getBookIdsByAuthor(name)
-            condition = condition.and(bookIdIn(bookIds))
+            condition = condition.and(bookIdInNotEmpty(bookIds))
         } else {
             condition = condition.and(author(UUID.fromString(name)))
         }
@@ -123,6 +140,27 @@ class BookServiceImpl : BookService {
         }, {
             status.message = String.format("Book %s does not exist", book.id)
             log.info(String.format("Book %s does not exist", book.id))
+        })
+        return status
+    }
+
+    override fun addBookToFavorite(bookId: UUID, name: String, isFavor: Boolean): Status {
+        val userId = UUID.fromString(name)
+        val status = Status()
+        favoriteRepository.findByUserIdAndBookId(userId, bookId).ifPresentOrElse({
+            if (isFavor) {
+                it.deletedAt = null
+            } else {
+                it.deletedAt = Timestamp(System.currentTimeMillis())
+            }
+            favoriteRepository.save(it)
+            status.status = 1
+            status.message = String.format("Favor %s has been edited", it.id)
+        }, {
+            val favorite = Favorite()
+            favorite.userId = userId
+            favorite.bookId = bookId
+            favoriteRepository.save(favorite)
         })
         return status
     }

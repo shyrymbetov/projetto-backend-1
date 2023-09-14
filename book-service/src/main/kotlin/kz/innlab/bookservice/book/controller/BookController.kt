@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
-import java.awt.print.Book
 import java.security.Principal
 import java.util.*
 
@@ -28,7 +27,7 @@ class BookController {
         principal: Principal
     ): Page<Books> {
         val pageR: PageRequest = PageRequest.of((page ?: 1) - 1, (size ?: 20), Sort.by(Sort.Direction.ASC, "createdAt"))
-        return service.getBookList(params, pageR)
+        return service.getBookList(params, pageR, principal.name)
     }
 
     @GetMapping("")
@@ -70,6 +69,16 @@ class BookController {
     @PreAuthorize("isAuthenticated()")
     fun editStatusBook(principal: Principal): ResponseEntity<*>{
         return ResponseEntity(service.editStatusAllBooks(principal.name), HttpStatus.OK)
+    }
+
+    @PutMapping("/favorite/{bookId}")
+    @PreAuthorize("isAuthenticated()")
+    fun addBookToFavorite(
+        @PathVariable bookId: UUID,
+        @RequestParam(value = "favor", required = false) favor: Boolean? = true,
+        principal: Principal
+    ): ResponseEntity<*>{
+        return ResponseEntity(service.addBookToFavorite(bookId, principal.name, favor ?: true), HttpStatus.OK)
     }
 
     @DeleteMapping("/{id}")

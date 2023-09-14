@@ -1,6 +1,7 @@
 package kz.innlab.bookservice.test.controller
 
 import kz.innlab.bookservice.test.model.BookTest
+import kz.innlab.bookservice.test.model.BookTestUser
 import kz.innlab.bookservice.test.service.BookTestService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -32,6 +33,17 @@ class BookTestController {
     @PreAuthorize("isAuthenticated()")
     fun createBook(@RequestBody book: BookTest, principal: Principal): ResponseEntity<*>{
         return ResponseEntity(service.createBookTest(book, principal.name), HttpStatus.OK)
+    }
+
+    @PostMapping("complete/{id}")
+    @PreAuthorize("isAuthenticated()")
+    fun completeBookTest(
+        @PathVariable id: UUID,
+        @RequestBody testUser: BookTestUser,
+        principal: Principal
+    ): ResponseEntity<*>{
+        testUser.testId = id
+        return ResponseEntity(service.completeBookTest(testUser, principal.name), HttpStatus.OK)
     }
 
     @PutMapping("/{id}")

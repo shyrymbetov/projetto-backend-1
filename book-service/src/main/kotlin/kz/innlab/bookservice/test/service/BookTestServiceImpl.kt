@@ -1,11 +1,11 @@
 package kz.innlab.bookservice.test.service
 
 import kz.innlab.bookservice.book.dto.Status
-import kz.innlab.bookservice.hyperlink.model.BookHyperlink
-import kz.innlab.bookservice.hyperlink.repository.BookHyperlinkRepository
 import kz.innlab.bookservice.system.service.PermissionService
 import kz.innlab.bookservice.test.model.BookTest
+import kz.innlab.bookservice.test.model.BookTestUser
 import kz.innlab.bookservice.test.repository.BookTestRepository
+import kz.innlab.bookservice.test.repository.BookTestUserRepository
 import kz.innlab.bookservice.test.repository.TestQuestionsRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,6 +22,9 @@ class BookTestServiceImpl: BookTestService {
 
     @Autowired
     lateinit var questionRepository: TestQuestionsRepository
+
+    @Autowired
+    lateinit var testUserRepository: BookTestUserRepository
 
     @Autowired
     lateinit var permissionService: PermissionService
@@ -64,6 +67,45 @@ class BookTestServiceImpl: BookTestService {
         status.value = test.id
         log.info(String.format("Book: %s has been created", test.name))
         return status
+    }
+
+    override fun completeBookTest(testUser: BookTestUser, name: String): Status {
+        val status = Status()
+
+        getBookTestById(testUser.testId!!, name).ifPresent {
+            //check answers
+            testUser.questions.forEach {
+                println("${it.correct}   ${it.userAnswers.joinToString(",")}")
+            }
+            checkUserAnswers(it, testUser)
+            testUser.questions.forEach {
+                println("${it.correct}   ${it.userAnswers.joinToString(",")}")
+            }
+            testUserRepository.save(testUser)
+
+            status.status = 1
+            status.message= String.format("Book Test has been complete")
+            status.value = testUser.id
+        }
+
+        return status
+    }
+
+    private fun checkUserAnswers(bookTest: BookTest, testUser: BookTestUser) {
+        val questions = bookTest.questions.associateBy { it.id }
+        testUser.questions.forEach {question ->
+            if (!questions.containsKey(question.id)) {
+                question.correct = false
+                return@forEach
+            }
+            var count = 0
+            questions[question.id]!!.correctAnswers.forEach { correct ->
+                if (question.userAnswers.contains(correct)) {
+                    count++
+                }
+            }
+            question.correct = count == questions[question.id]!!.correctAnswers.size
+        }
     }
 
     override fun editBookTest(test: BookTest, userId: String): Status {
