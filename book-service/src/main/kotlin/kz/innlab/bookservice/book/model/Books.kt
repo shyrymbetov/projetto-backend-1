@@ -26,6 +26,9 @@ class Books: Auditable<String?>() {
 
     var avatarId: UUID? = null
 
+    var pdfFileId: UUID? = null
+    var fileId: UUID? = null
+
     var paid: Boolean? = false
 
     @Enumerated(EnumType.STRING)

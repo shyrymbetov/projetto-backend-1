@@ -6,13 +6,13 @@ import kz.innlab.bookservice.book.model.Books
 import kz.innlab.bookservice.book.model.Favorite
 import kz.innlab.bookservice.book.repository.BookRepository
 import kz.innlab.bookservice.book.repository.BookSpecification.Companion.author
-import kz.innlab.bookservice.book.repository.BookSpecification.Companion.bookIdIn
 import kz.innlab.bookservice.book.repository.BookSpecification.Companion.bookIdInNotEmpty
 import kz.innlab.bookservice.book.repository.BookSpecification.Companion.bookStatusPublic
 import kz.innlab.bookservice.book.repository.BookSpecification.Companion.categoryEquals
 import kz.innlab.bookservice.book.repository.BookSpecification.Companion.containsName
 import kz.innlab.bookservice.book.repository.BookSpecification.Companion.deletedAtIsNull
 import kz.innlab.bookservice.book.repository.FavoriteRepository
+import kz.innlab.bookservice.system.client.FileServiceClient
 import kz.innlab.bookservice.system.service.PermissionService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -34,6 +34,9 @@ class BookServiceImpl : BookService {
 
     @Autowired
     lateinit var favoriteRepository: FavoriteRepository
+
+    @Autowired
+    lateinit var fileServiceClient: FileServiceClient
 
     @Autowired
     lateinit var permissionService: PermissionService
@@ -91,6 +94,11 @@ class BookServiceImpl : BookService {
 //            return status
 //        }
         book.status = BookStatusEnum.NOT_PUBLIC
+        val fileStatus = fileServiceClient.createEmptyFileForBook()
+        if (fileStatus.status == 1) {
+            book.fileId = UUID.fromString(fileStatus.value.toString())
+        }
+
         repository.save(book)
         authorService.createAuthors(book.id!!, book.coauthors)
 

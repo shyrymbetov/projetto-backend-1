@@ -22,6 +22,9 @@ spring:
       max-request-size: 500MB
       location: /Users/nurzhankongratbayev/Documents/GitHub/softbooks
 
+sketchfab:
+  token: 95b2ac087c20456e96f01432d30af82b
+
 server:
   servlet:
     context-path: /file
