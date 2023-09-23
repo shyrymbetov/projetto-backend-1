@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.InputStreamResource
 import org.springframework.http.*
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import java.io.FileInputStream
@@ -28,7 +27,7 @@ class FileController {
 //    @PreAuthorize("isAuthenticated()")
     fun getDownloadFile(
         @PathVariable(value = "id") id: UUID,
-        @RequestParam(value = "filename") filename: String,
+        @RequestParam(value = "filename", required = false) filename: String? = "Word",
 //        authentication: Authentication
     ): ResponseEntity<*> {
         val file = fileService.getFile(id)
@@ -54,30 +53,12 @@ class FileController {
         return ResponseEntity("File not exists", HttpStatus.BAD_REQUEST)
     }
 
-    @GetMapping("/word")
-//    @PreAuthorize("isAuthenticated()")
-    fun getWordFile(): ResponseEntity<*> {
-        val pathToFile = fileService.getFullPathWord()
-        if (FileService.fileExists(pathToFile)) {
-            val resource = InputStreamResource(FileInputStream(pathToFile))
-
-            val httpHeaders = HttpHeaders()
-            val contentDisposition = ContentDisposition.builder("attachment")
-                .filename("demo.docx", StandardCharsets.UTF_8)
-                .build()
-            httpHeaders.contentDisposition = contentDisposition
-            httpHeaders.contentType = FileService.contentTypeFromMime("application/msword", MediaType.APPLICATION_OCTET_STREAM)
-            return ResponseEntity(resource, httpHeaders, HttpStatus.OK)
-        }
-
-        return ResponseEntity("File not exists", HttpStatus.BAD_REQUEST)
-    }
 
     @PostMapping("upload")
-    @PreAuthorize("isAuthenticated()")
+//    @PreAuthorize("isAuthenticated()")
     fun uploadFile(
         @RequestParam("file") fileForm: MultipartFile,
-        authentication: Authentication
+//        authentication: Authentication
     ): ResponseEntity<*> {
         val status = Status()
         val result = fileService.saveFile(fileForm)
@@ -88,5 +69,4 @@ class FileController {
         }
         return ResponseEntity(status, HttpStatus.OK)
     }
-
 }

@@ -21,6 +21,8 @@ import java.security.MessageDigest
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.ws.rs.BadRequestException
+import javax.ws.rs.NotAuthorizedException
 import kotlin.experimental.and
 import kz.innlab.fileservice.model.File as FileModel
 
@@ -29,9 +31,15 @@ import kz.innlab.fileservice.model.File as FileModel
  * @author Bekzat Sailaubayev on 12.02.2022
  */
 @Service
-class FileService {
+class BookFileService {
     @Value("\${spring.servlet.multipart.location}")
     private val uploadPath: String = ""
+
+    @Value("\${sketchfab.token}")
+    private val sketchfabToken: String? = ""
+
+    @Autowired
+    lateinit var sketchfabClient: SketchfabClient
 
     @Autowired
     lateinit var fileRepository: FileRepository
@@ -48,37 +56,28 @@ class FileService {
         return  "$uploadPath/word/demo.docx"
     }
 
-    fun saveFile(multipartFile: MultipartFile): UUID? {
-        val file: File = multipartFileToFile(multipartFile, "$uploadPath/tmp/")
+    fun createEmptyFileForBook(): Status {
+        val file = File(getFullPathWord())
         val hashFile = sha256Checksum(file)
-        val fileCandidate = fileRepository.findByHashCodeAndDeletedAtIsNull(hashFile)
-        if (fileCandidate.isPresent) {
-            if (!File(getFullPath(fileCandidate.get())).exists()) {
-                createFile(file, fileCandidate.get().id!!, fileCandidate.get().createdAt)
-            }
-            file.delete()
-            return fileCandidate.get().id!!
-        }
-
         val newFile = FileModel()
-        newFile.fileName = multipartFile.originalFilename!!.substringBeforeLast(".")
-        newFile.fileFormat = multipartFile.originalFilename!!.substringAfterLast(".")
-        newFile.mime = multipartFile.contentType
+        newFile.fileName = "Book"
+        newFile.fileFormat = "docx"
+        newFile.mime = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         newFile.hashCode = hashFile
-        newFile.size = multipartFile.size
+        newFile.size = -1L
 
         fileRepository.save(newFile)
 
         if (newFile.id != null) {
             try {
-                createFile(file, newFile.id!!, newFile.createdAt)
+                copyFileTo(file, newFile.id!!, newFile.createdAt)
             } catch (e: Exception) {
                 println(e.message)
                 throw FileNotFoundException("File doesn't created")
             }
         }
 
-        return  newFile.id
+        return  Status(1, "Success", newFile.id!!)
     }
 
     @Throws(IOException::class)
@@ -125,6 +124,45 @@ class FileService {
         if (!fileExists(newPath))
             throw FileNotFoundException("File doesn't created")
         return newPath
+    }
+    fun copyFileTo(tmpFile: File, id: UUID, createdDate: Timestamp = Timestamp(System.currentTimeMillis())): String {
+        val newPath = getFilesPath(uploadPath, createdDate) + id
+        tmpFile.let { sourceFile ->
+            if (!fileExists(newPath)) {
+                sourceFile.copyTo(File(newPath))
+            }
+        }
+        if (!fileExists(newPath))
+            throw FileNotFoundException("File doesn't created")
+        return newPath
+    }
+
+    fun uploadSketchfabFile(name: String?, multipartFile: MultipartFile): Status {
+        val authorization = "Token $sketchfabToken"
+
+        try {
+            val sketchfabUploadModelResponse = sketchfabClient.uploadModel(
+                authorization,
+                name?: "Model",
+                true,
+                true,
+                multipartFile
+            )
+
+            println("Upload sucess!!! " + sketchfabUploadModelResponse.body)
+            return Status(1, "Success")
+        } catch (ex: NotAuthorizedException) {
+            //call not authorized, possible TOKEN problem
+            println("Invalid Token -> $sketchfabToken")
+        } catch (ex: BadRequestException) {
+            //Basic - 50MB per upload
+            println("bad parameters")
+        }
+        return Status()
+    }
+
+    fun sketchfabFileList(search: String): ModelSearchResponse {
+        return sketchfabClient.getSketchfabModels(search)
     }
 
     companion object {

@@ -11,5 +11,4 @@ interface TelegramServiceClient {
 
     @PostMapping("/send")
     fun sendMessage(@Valid @RequestBody message: TelegramMessageDto)
-
 }
