@@ -47,10 +47,10 @@ class BookFileController {
     @PostMapping("/onlyoffice-callback")
     fun handleCallback(@RequestBody body: String): ResponseEntity<String> {
         // Your callback handling logic here
-        println("uywberpigwbherg")
+        println(body)
         // Parse the JSON data from OnlyOffice (assuming it's in JSON format)
-//        val jsonObj: JSONObject = JSONParser().parse(body) as JSONObject
-//
+        val jsonObj: JSONObject = JSONParser().parse(body) as JSONObject
+
 //        if (jsonObj["status"] as Long == 2L) {
 //            val downloadUri = jsonObj["url"] as String
 //            val url = URL(downloadUri)
@@ -68,7 +68,6 @@ class BookFileController {
 //            connection.disconnect()
 //        }
 
-        // Return a response (for example, a success message)
         return ResponseEntity.ok("{\"error\":0}")
     }
 
