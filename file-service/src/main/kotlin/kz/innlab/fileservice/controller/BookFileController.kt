@@ -44,29 +44,34 @@ class BookFileController {
 
         return null
     }
-    @PostMapping("/onlyoffice-callback")
-    fun handleCallback(@RequestBody body: String): ResponseEntity<String> {
+    @PostMapping("/onlyoffice-callback/{fileId}")
+    fun handleCallback(@RequestBody body: String, @PathVariable fileId: UUID): ResponseEntity<String> {
         // Your callback handling logic here
+        val file = bookFileService.getFile(fileId)
         println(body)
         // Parse the JSON data from OnlyOffice (assuming it's in JSON format)
+        if (file.isEmpty) {
+            return ResponseEntity.ok("{\"error\":0}")
+        }
         val jsonObj: JSONObject = JSONParser().parse(body) as JSONObject
+        val pathToFile = bookFileService.getFullPath(file.get())
 
-//        if (jsonObj["status"] as Long == 2L) {
-//            val downloadUri = jsonObj["url"] as String
-//            val url = URL(downloadUri)
-//            val connection = url.openConnection() as HttpURLConnection
-//            val stream = connection.inputStream
-//            val savedFile = File("pathForSave")
-//            FileOutputStream(savedFile).use { out ->
-//                var read: Int
-//                val bytes = ByteArray(1024)
-//                while (stream.read(bytes).also { read = it } != -1) {
-//                    out.write(bytes, 0, read)
-//                }
-//                out.flush()
-//            }
-//            connection.disconnect()
-//        }
+        if (jsonObj["status"] as Long == 2L) {
+            val downloadUri = jsonObj["url"] as String
+            val url = URL(downloadUri)
+            val connection = url.openConnection() as HttpURLConnection
+            val stream = connection.inputStream
+            val savedFile = File(pathToFile)
+            FileOutputStream(savedFile).use { out ->
+                var read: Int
+                val bytes = ByteArray(1024)
+                while (stream.read(bytes).also { read = it } != -1) {
+                    out.write(bytes, 0, read)
+                }
+                out.flush()
+            }
+            connection.disconnect()
+        }
 
         return ResponseEntity.ok("{\"error\":0}")
     }
