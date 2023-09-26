@@ -55,7 +55,7 @@ class BookFileController {
         }
         val jsonObj: JSONObject = JSONParser().parse(body) as JSONObject
         val pathToFile = bookFileService.getFullPath(file.get())
-        println(pathToFile)
+        println(pathToFile);
 
         if (jsonObj["status"] as Long == 2L) {
             val downloadUri = jsonObj["url"] as String
