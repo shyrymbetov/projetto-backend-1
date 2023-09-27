@@ -1,5 +1,8 @@
 package kz.innlab.fileservice.controller
 
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import kz.innlab.fileservice.client.DocumentServerClient
 import kz.innlab.fileservice.dto.Status
 import kz.innlab.fileservice.service.BookFileService
@@ -29,6 +32,8 @@ class BookFileController {
 
     @Autowired
     lateinit var documentServer: DocumentServerClient
+
+    private val objectMapper = ObjectMapper()
 
     @GetMapping("/pdf/{id}")
     fun getDownloadFile(
@@ -101,32 +106,40 @@ class BookFileController {
         val jsonResponse: String = documentServer.getConvertedFileLink(body)
         println(jsonResponse)
 
-        val jsonObj: JSONObject = JSONParser().parse(jsonResponse) as JSONObject
+        val xmlMapper = XmlMapper()
+
+        // Parse the XML string into a JsonNode
+        val jsonNode: JsonNode = xmlMapper.readTree(jsonResponse)
+
+        // Convert the JsonNode to JSON string
+        val jsonString = objectMapper.writeValueAsString(jsonNode)
+        val resultMap = objectMapper.readValue(jsonString, MutableMap::class.java)
 
         // Your callback handling logic here
         val file = bookFileService.getFile(fileId)
         val pathToFile = bookFileService.getPdfPath(file)
         println(pathToFile)
+        println(resultMap)
 
-//        if (jsonObj["EndConvert"] as Boolean) {
-//            val downloadUri = jsonObj["FileUrl"] as String
-//            val url = URL(downloadUri)
-//            val connection = url.openConnection() as HttpURLConnection
-//            val stream = connection.inputStream
-//            val savedFile = File(pathToFile)
-//            if (!savedFile.exists()) {
-//                savedFile.createNewFile()
-//            }
-//            FileOutputStream(savedFile).use { out ->
-//                var read: Int
-//                val bytes = ByteArray(1024)
-//                while (stream.read(bytes).also { read = it } != -1) {
-//                    out.write(bytes, 0, read)
-//                }
-//                out.flush()
-//            }
-//            connection.disconnect()
-//        }
+        if (resultMap["EndConvert"] as Boolean) {
+            val downloadUri = resultMap["FileUrl"] as String
+            val url = URL(downloadUri)
+            val connection = url.openConnection() as HttpURLConnection
+            val stream = connection.inputStream
+            val savedFile = File(pathToFile)
+            if (!savedFile.exists()) {
+                savedFile.createNewFile()
+            }
+            FileOutputStream(savedFile).use { out ->
+                var read: Int
+                val bytes = ByteArray(1024)
+                while (stream.read(bytes).also { read = it } != -1) {
+                    out.write(bytes, 0, read)
+                }
+                out.flush()
+            }
+            connection.disconnect()
+        }
 
         // Return a response (for example, a success message)
         return Status(1, "Successs")
