@@ -1,5 +1,6 @@
 package kz.innlab.fileservice.controller
 
+import kz.innlab.fileservice.client.DocumentServerClient
 import kz.innlab.fileservice.dto.Status
 import kz.innlab.fileservice.service.BookFileService
 import kz.innlab.fileservice.service.FileService
@@ -26,36 +27,44 @@ class BookFileController {
     @Autowired
     lateinit var bookFileService: BookFileService
 
-    @GetMapping("/download/{id}")
+    @Autowired
+    lateinit var documentServer: DocumentServerClient
+
+    @GetMapping("/pdf/{id}")
     fun getDownloadFile(
         @PathVariable(value = "id") id: UUID,
         @RequestParam(value = "filename", required = false) filename: String? = "Word",
-    ): File? {
+    ): ResponseEntity<*> {
         val file = bookFileService.getFile(id)
-        if (file.isEmpty) {
-            return null
-        }
-
-        val pathToFile = bookFileService.getFullPath(file.get())
-
+        val pathToFile = bookFileService.getPdfPath(file)
         if (FileService.fileExists(pathToFile)) {
-            return File(pathToFile)
+            val resource = InputStreamResource(FileInputStream(pathToFile))
+
+            val httpHeaders = HttpHeaders()
+            val contentDisposition = ContentDisposition.builder("attachment")
+                .filename("$filename.pdf", StandardCharsets.UTF_8)
+                .build()
+            httpHeaders.contentDisposition = contentDisposition
+            httpHeaders.contentType = FileService.contentTypeFromMime("application/pdf", MediaType.APPLICATION_OCTET_STREAM)
+            if (file.size != null && file.size!! > 0) {
+                httpHeaders.contentLength = file.size!!
+            }
+            return ResponseEntity(resource, httpHeaders, HttpStatus.OK)
         }
 
-        return null
+        return ResponseEntity("File not exists", HttpStatus.BAD_REQUEST)
     }
-    @PostMapping("/onlyoffice-callback")
-    fun handleCallback(@RequestBody body: String): ResponseEntity<String> {
-        // Your callback handling logic here
+
+    @PostMapping("/onlyoffice-callback/{fileId}")
+    fun handleCallback(@RequestBody body: String, @PathVariable fileId: UUID): ResponseEntity<String> {
+        // Parse the JSON data from OnlyOffice (assuming it's in JSON format)
         val jsonObj: JSONObject = JSONParser().parse(body) as JSONObject
         println(body)
-        val file = bookFileService.getFile(UUID.fromString(jsonObj["key"].toString()))
-        // Parse the JSON data from OnlyOffice (assuming it's in JSON format)
-        if (file.isEmpty) {
-            return ResponseEntity.ok("{\"error\":0}")
-        }
-        val pathToFile = bookFileService.getFullPath(file.get())
-        println(pathToFile);
+
+        // Your callback handling logic here
+        val file = bookFileService.getFile(fileId)
+        val pathToFile = bookFileService.getFullPath(file)
+        println(pathToFile)
 
         if (jsonObj["status"] as Long == 2L) {
             val downloadUri = jsonObj["url"] as String
@@ -72,6 +81,7 @@ class BookFileController {
                 out.flush()
             }
             connection.disconnect()
+            convertFileToPdf(fileId)
         }
 
         return ResponseEntity.ok("{\"error\":0}")
@@ -84,15 +94,42 @@ class BookFileController {
         return ResponseEntity(bookFileService.createEmptyFileForBook(), HttpStatus.OK)
     }
 
-    @PostMapping("/onlyoffice/convert/{fileId}")
-    fun convertFileToPdf(@PathVariable fileId: UUID): ResponseEntity<String> {
+    fun convertFileToPdf(@PathVariable fileId: UUID): Status {
         // Your callback handling logic here
-        val body = "{\"async\":false,\"filetype\":\"docx\",\"key\":\"$fileId\",\"outputtype\":\"pdf\",\"title\":\"ExampleDocumentTitle.docx\",\"url\":\"https://x.ozenx.io/bcspc/attachments/download/5301c90b-0c06-4b3e-86a0-8b9c024539ee\"}"
+        val body = "{\"async\":false,\"filetype\":\"docx\",\"key\":\"${UUID.randomUUID()}\",\"outputtype\":\"pdf\",\"title\":\"convert.docx\",\"url\":\"https://ubooks.kz/soft/file/download/$fileId\"}"
 
+        val jsonResponse: String = documentServer.getConvertedFileLink(body)
+        println(jsonResponse)
 
+        val jsonObj: JSONObject = JSONParser().parse(jsonResponse) as JSONObject
+
+        // Your callback handling logic here
+        val file = bookFileService.getFile(fileId)
+        val pathToFile = bookFileService.getPdfPath(file)
+        println(pathToFile)
+
+//        if (jsonObj["EndConvert"] as Boolean) {
+//            val downloadUri = jsonObj["FileUrl"] as String
+//            val url = URL(downloadUri)
+//            val connection = url.openConnection() as HttpURLConnection
+//            val stream = connection.inputStream
+//            val savedFile = File(pathToFile)
+//            if (!savedFile.exists()) {
+//                savedFile.createNewFile()
+//            }
+//            FileOutputStream(savedFile).use { out ->
+//                var read: Int
+//                val bytes = ByteArray(1024)
+//                while (stream.read(bytes).also { read = it } != -1) {
+//                    out.write(bytes, 0, read)
+//                }
+//                out.flush()
+//            }
+//            connection.disconnect()
+//        }
 
         // Return a response (for example, a success message)
-        return ResponseEntity.ok("{\"error\":0}")
+        return Status(1, "Successs")
     }
 
 

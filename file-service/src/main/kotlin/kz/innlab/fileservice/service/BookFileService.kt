@@ -4,6 +4,7 @@ import kz.innlab.fileservice.client.SketchfabClient
 import kz.innlab.fileservice.dto.ModelSearchResponse
 import kz.innlab.fileservice.dto.SketchfabUploadModelResponse
 import kz.innlab.fileservice.dto.Status
+import kz.innlab.fileservice.exceptionHandler.NoSuchElementFoundException
 import kz.innlab.fileservice.repository.FileRepository
 import org.glassfish.jersey.client.ClientConfig
 import org.springframework.beans.factory.annotation.Autowired
@@ -44,8 +45,15 @@ class BookFileService {
     @Autowired
     lateinit var fileRepository: FileRepository
 
-    fun getFile(id: UUID): Optional<FileModel> {
+    fun getFile(id: UUID): FileModel {
         return fileRepository.findByIdAndDeletedAtIsNull(id)
+            .orElseThrow { NoSuchElementFoundException("Invalid file provided => $id") }
+    }
+
+    fun getPdfPath(fileModel: FileModel): String {
+        val directory = "$uploadPath/bookFiles/"
+        Files.createDirectories(Paths.get(directory))
+        return "$directory/${fileModel.id}"
     }
 
     fun getFullPath(fileModel: FileModel): String {
