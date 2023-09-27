@@ -51,7 +51,7 @@ class BookFileService {
     }
 
     fun getPdfPath(fileModel: FileModel): String {
-        val directory = "$uploadPath/bookFiles/"
+        val directory = "$uploadPath/bookFiles"
         Files.createDirectories(Paths.get(directory))
         return "$directory/${fileModel.id}"
     }
