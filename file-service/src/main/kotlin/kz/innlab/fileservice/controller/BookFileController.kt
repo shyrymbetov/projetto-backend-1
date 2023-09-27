@@ -44,16 +44,16 @@ class BookFileController {
 
         return null
     }
-    @PostMapping("/onlyoffice-callback/{fileId}")
-    fun handleCallback(@RequestBody body: String, @PathVariable fileId: UUID): ResponseEntity<String> {
+    @PostMapping("/onlyoffice-callback")
+    fun handleCallback(@RequestBody body: String): ResponseEntity<String> {
         // Your callback handling logic here
-        val file = bookFileService.getFile(fileId)
+        val jsonObj: JSONObject = JSONParser().parse(body) as JSONObject
         println(body)
+        val file = bookFileService.getFile(UUID.fromString(jsonObj["key"].toString()))
         // Parse the JSON data from OnlyOffice (assuming it's in JSON format)
         if (file.isEmpty) {
             return ResponseEntity.ok("{\"error\":0}")
         }
-        val jsonObj: JSONObject = JSONParser().parse(body) as JSONObject
         val pathToFile = bookFileService.getFullPath(file.get())
         println(pathToFile)
 
