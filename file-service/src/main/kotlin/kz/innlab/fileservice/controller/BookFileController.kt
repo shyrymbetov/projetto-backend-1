@@ -121,7 +121,7 @@ class BookFileController {
         println(pathToFile)
         println(resultMap)
 
-        if (resultMap["EndConvert"] as Boolean) {
+        if (resultMap["EndConvert"].toString().toBoolean()) {
             val downloadUri = resultMap["FileUrl"] as String
             val url = URL(downloadUri)
             val connection = url.openConnection() as HttpURLConnection
