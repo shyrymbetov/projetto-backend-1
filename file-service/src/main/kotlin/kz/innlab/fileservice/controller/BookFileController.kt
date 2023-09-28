@@ -7,6 +7,7 @@ import kz.innlab.fileservice.client.DocumentServerClient
 import kz.innlab.fileservice.dto.Status
 import kz.innlab.fileservice.service.BookFileService
 import kz.innlab.fileservice.service.FileService
+import org.apache.poi.xwpf.usermodel.XWPFDocument
 import org.json.simple.JSONObject
 import org.json.simple.parser.JSONParser
 import org.springframework.beans.factory.annotation.Autowired
@@ -86,6 +87,26 @@ class BookFileController {
                 out.flush()
             }
             connection.disconnect()
+
+            try {
+                val document = XWPFDocument(FileInputStream(pathToFile))
+                val headings = mutableListOf<String>()
+
+                for (paragraph in document.paragraphs) {
+                    val style = paragraph.style
+                    if (style.startsWith("Heading")) {
+                        // You can customize the logic for filtering headings as needed
+                        headings.add(paragraph.text)
+                    }
+                }
+
+                // Print the extracted headings
+                headings.forEach { println(it) }
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
             convertFileToPdf(fileId)
         }
 
