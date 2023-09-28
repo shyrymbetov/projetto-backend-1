@@ -90,18 +90,10 @@ class BookFileController {
 
             try {
                 val document = XWPFDocument(FileInputStream(pathToFile))
-                val headings = mutableListOf<String>()
 
-                for (paragraph in document.paragraphs) {
-                    val style = paragraph.style
-                    if (style.startsWith("Heading")) {
-                        // You can customize the logic for filtering headings as needed
-                        headings.add(paragraph.text)
-                    }
+                for (paragraph in document.headerList) {
+                    println(paragraph)
                 }
-
-                // Print the extracted headings
-                headings.forEach { println(it) }
 
             } catch (e: Exception) {
                 e.printStackTrace()
