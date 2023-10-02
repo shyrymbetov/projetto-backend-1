@@ -1,5 +1,6 @@
 package kz.innlab.bookservice.test.model
 
+import com.vladmihalcea.hibernate.type.array.StringArrayType
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType
 import kz.innlab.bookservice.system.model.Auditable
 import org.hibernate.annotations.Type
@@ -12,8 +13,8 @@ import javax.persistence.*
 @Table(name = "book_test_questions")
 @TypeDefs(
     TypeDef(
-        name = "jsonb",
-        typeClass = JsonBinaryType::class
+        name = "string-array",
+        typeClass = StringArrayType::class
     )
 )
 class TestQuestions: Auditable<String?>() {

@@ -1,8 +1,12 @@
 package kz.innlab.bookservice.book.model
 
+import com.vladmihalcea.hibernate.type.array.StringArrayType
+import com.vladmihalcea.hibernate.type.array.UUIDArrayType
 import kz.innlab.bookservice.book.dto.BookStatusEnum
 import kz.innlab.bookservice.system.model.Auditable
 import org.hibernate.annotations.Type
+import org.hibernate.annotations.TypeDef
+import org.hibernate.annotations.TypeDefs
 import java.util.*
 import javax.persistence.*
 import kotlin.collections.ArrayList
@@ -10,6 +14,12 @@ import kotlin.jvm.Transient
 
 @Entity
 @Table(name = "books")
+@TypeDefs(
+    TypeDef(
+        name = "string-array",
+        typeClass = StringArrayType::class
+    )
+)
 class Books: Auditable<String?>() {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
