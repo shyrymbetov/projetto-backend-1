@@ -56,6 +56,12 @@ class BookFileService {
         return "$directory/${fileModel.id}"
     }
 
+    fun getEpubPath(fileModel: FileModel): String {
+        val directory = "$uploadPath/epubFiles"
+        Files.createDirectories(Paths.get(directory))
+        return "$directory/${fileModel.id}"
+    }
+
     fun getFullPath(fileModel: FileModel): String {
         return getFilesPath(uploadPath, fileModel.createdAt) + fileModel.id
     }
