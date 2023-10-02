@@ -90,11 +90,11 @@ class BookFileController {
 
             try {
                 val document = XWPFDocument(FileInputStream(pathToFile))
-                val content = arrayListOf<String>()
+                var content = arrayOf<String>()
                 for (paragraph in document.paragraphs) {
                     if (paragraph.style != null) {
                         println(paragraph.text + " " + paragraph.style)
-                        content.add(paragraph.text)
+                        content = content.plus(paragraph.text)
                     }
                 }
                 bookFileService.editBookContent(fileId, content)

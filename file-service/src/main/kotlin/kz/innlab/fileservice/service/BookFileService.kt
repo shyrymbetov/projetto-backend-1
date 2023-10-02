@@ -190,7 +190,7 @@ class BookFileService {
         return sketchfabClient.getSketchfabModels(search)
     }
 
-    fun editBookContent(fileId: UUID, content: ArrayList<String>): Status {
+    fun editBookContent(fileId: UUID, content: Array<String>): Status {
         return bookClient.editBookContent(fileId, content)
     }
 

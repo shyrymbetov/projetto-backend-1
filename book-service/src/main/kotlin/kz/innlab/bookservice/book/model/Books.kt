@@ -31,7 +31,7 @@ class Books: Auditable<String?>() {
 
     @Type(type = "string-array")
     @Column(columnDefinition = "character varying[]")
-    var content: ArrayList<String> = arrayListOf()
+    var content: Array<String> = arrayOf()
 
     @Column(name = "description", columnDefinition = "TEXT")
     var description: String? = null

@@ -54,7 +54,8 @@ class BookController {
 
     @PutMapping("/content/{fileId}")
     @PreAuthorize("isAuthenticated() or #oauth2.hasScope('server')")
-    fun editBookContent(@RequestBody content: ArrayList<String>, @PathVariable fileId: UUID): Status {
+    fun editBookContent(@RequestBody content: Array<String>, @PathVariable fileId: UUID): Status {
+        println("controller")
         return service.editBookContent(fileId, content)
     }
 

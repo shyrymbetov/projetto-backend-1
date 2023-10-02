@@ -16,5 +16,5 @@ interface BookService {
     fun deleteBook(id: UUID, userId: String): Status
     fun editStatusAllBooks(name: String): Status
     fun addBookToFavorite(bookId: UUID, name: String, isFavor: Boolean): Status
-    fun editBookContent(fileId: UUID, content: ArrayList<String>): Status
+    fun editBookContent(fileId: UUID, content: Array<String>): Status
 }
