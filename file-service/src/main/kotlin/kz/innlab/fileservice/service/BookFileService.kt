@@ -62,6 +62,12 @@ class BookFileService {
         return "$directory/${fileModel.id}"
     }
 
+    fun getHtmlPath(fileModel: FileModel): String {
+        val directory = "$uploadPath/htmlFiles"
+        Files.createDirectories(Paths.get(directory))
+        return "$directory/${fileModel.id}"
+    }
+
     fun getFullPath(fileModel: FileModel): String {
         return getFilesPath(uploadPath, fileModel.createdAt) + fileModel.id
     }
