@@ -109,6 +109,20 @@ class BookServiceImpl : BookService {
         return status
     }
 
+    override fun editBookContent(fileId: UUID, content: ArrayList<String>): Status {
+        val status = Status()
+        repository.findOneByFileIdAndDeletedAtIsNull(fileId).ifPresentOrElse({
+            it.content = content
+            repository.save(it)
+            status.status = 1
+            status.message = String.format("Book %s has been edited", it.id)
+            status.value = it.id
+        }, {
+            status.message = String.format("Book does not exist")
+        })
+        return status
+    }
+
     override fun editBook(newBook: Books, userId: String): Status {
         val status = Status()
 //        if (!permissionService.permission(userId, "book-list",  "update")) {

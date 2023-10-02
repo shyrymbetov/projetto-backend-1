@@ -1,5 +1,6 @@
 package kz.innlab.bookservice.book.controller
 
+import kz.innlab.bookservice.book.dto.Status
 import kz.innlab.bookservice.book.model.Books
 import kz.innlab.bookservice.book.service.BookService
 import org.springframework.beans.factory.annotation.Autowired
@@ -49,6 +50,12 @@ class BookController {
     @PreAuthorize("isAuthenticated()")
     fun createBook(@RequestBody book: Books, principal: Principal): ResponseEntity<*>{
         return ResponseEntity(service.createBook(book, principal.name), HttpStatus.OK)
+    }
+
+    @PutMapping("/content/{fileId}")
+    @PreAuthorize("isAuthenticated() or #oauth2.hasScope('server')")
+    fun editBookContent(@RequestBody content: ArrayList<String>, @PathVariable fileId: UUID): Status {
+        return service.editBookContent(fileId, content)
     }
 
     @PutMapping("/{id}")

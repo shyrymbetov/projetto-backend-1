@@ -1,5 +1,6 @@
 package kz.innlab.fileservice.service
 
+import kz.innlab.fileservice.client.BookClient
 import kz.innlab.fileservice.client.SketchfabClient
 import kz.innlab.fileservice.dto.ModelSearchResponse
 import kz.innlab.fileservice.dto.SketchfabUploadModelResponse
@@ -24,6 +25,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.ws.rs.BadRequestException
 import javax.ws.rs.NotAuthorizedException
+import kotlin.collections.ArrayList
 import kotlin.experimental.and
 import kz.innlab.fileservice.model.File as FileModel
 
@@ -41,6 +43,9 @@ class BookFileService {
 
     @Autowired
     lateinit var sketchfabClient: SketchfabClient
+
+    @Autowired
+    lateinit var bookClient: BookClient
 
     @Autowired
     lateinit var fileRepository: FileRepository
@@ -183,6 +188,10 @@ class BookFileService {
 
     fun sketchfabFileList(search: String): ModelSearchResponse {
         return sketchfabClient.getSketchfabModels(search)
+    }
+
+    fun editBookContent(fileId: UUID, content: ArrayList<String>): Status {
+        return bookClient.editBookContent(fileId, content)
     }
 
     companion object {

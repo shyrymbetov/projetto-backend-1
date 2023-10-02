@@ -9,4 +9,5 @@ interface BookRepository: JpaRepository<Books, UUID>, JpaSpecificationExecutor<B
     fun findByIdAndDeletedAtIsNull(id: UUID): Optional<Books>
     fun findAllByIdInAndDeletedAtIsNull(bookIds: List<UUID>): List<Books>
     fun findAllByDeletedAtIsNull(): List<Books>
+    fun findOneByFileIdAndDeletedAtIsNull(fileId: UUID): Optional<Books>
 }

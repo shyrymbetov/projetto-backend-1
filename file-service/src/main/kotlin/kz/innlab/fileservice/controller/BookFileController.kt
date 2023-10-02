@@ -90,18 +90,20 @@ class BookFileController {
 
             try {
                 val document = XWPFDocument(FileInputStream(pathToFile))
+                val content = arrayListOf<String>()
                 for (paragraph in document.paragraphs) {
                     if (paragraph.style != null) {
                         println(paragraph.text + " " + paragraph.style)
+                        content.add(paragraph.text)
                     }
                 }
+                bookFileService.editBookContent(fileId, content)
 
             } catch (e: Exception) {
                 e.printStackTrace()
             }
 
             convertFileToPdf(fileId)
-            convertFileToEpub(fileId)
             convertFileToHtml(fileId)
         }
 
@@ -134,51 +136,6 @@ class BookFileController {
         // Your callback handling logic here
         val file = bookFileService.getFile(fileId)
         val pathToFile = bookFileService.getPdfPath(file)
-        println(pathToFile)
-        println(resultMap)
-
-        if (resultMap["EndConvert"].toString().toBoolean()) {
-            val downloadUri = resultMap["FileUrl"] as String
-            val url = URL(downloadUri)
-            val connection = url.openConnection() as HttpURLConnection
-            val stream = connection.inputStream
-            val savedFile = File(pathToFile)
-            if (!savedFile.exists()) {
-                savedFile.createNewFile()
-            }
-            FileOutputStream(savedFile).use { out ->
-                var read: Int
-                val bytes = ByteArray(1024)
-                while (stream.read(bytes).also { read = it } != -1) {
-                    out.write(bytes, 0, read)
-                }
-                out.flush()
-            }
-            connection.disconnect()
-        }
-
-        // Return a response (for example, a success message)
-        return Status(1, "Successs")
-    }
-    fun convertFileToEpub(@PathVariable fileId: UUID): Status {
-        // Your callback handling logic here
-        val body = "{\"async\":false,\"filetype\":\"docx\",\"key\":\"${UUID.randomUUID()}\",\"outputtype\":\"epub\",\"title\":\"convert.docx\",\"url\":\"https://ubooks.kz/soft/file/download/$fileId\"}"
-
-        val jsonResponse: String = documentServer.getConvertedFileLink(body)
-        println(jsonResponse)
-
-        val xmlMapper = XmlMapper()
-
-        // Parse the XML string into a JsonNode
-        val jsonNode: JsonNode = xmlMapper.readTree(jsonResponse)
-
-        // Convert the JsonNode to JSON string
-        val jsonString = objectMapper.writeValueAsString(jsonNode)
-        val resultMap = objectMapper.readValue(jsonString, MutableMap::class.java)
-
-        // Your callback handling logic here
-        val file = bookFileService.getFile(fileId)
-        val pathToFile = bookFileService.getEpubPath(file)
         println(pathToFile)
         println(resultMap)
 

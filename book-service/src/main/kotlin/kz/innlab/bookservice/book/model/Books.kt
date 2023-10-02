@@ -2,8 +2,10 @@ package kz.innlab.bookservice.book.model
 
 import kz.innlab.bookservice.book.dto.BookStatusEnum
 import kz.innlab.bookservice.system.model.Auditable
+import org.hibernate.annotations.Type
 import java.util.*
 import javax.persistence.*
+import kotlin.collections.ArrayList
 import kotlin.jvm.Transient
 
 @Entity
@@ -16,6 +18,10 @@ class Books: Auditable<String?>() {
     var name: String? = null
 
     var author: String? = null
+
+    @Type(type = "string-array")
+    @Column(columnDefinition = "character varying[]")
+    var content: ArrayList<String> = arrayListOf()
 
     @Column(name = "description", columnDefinition = "TEXT")
     var description: String? = null
