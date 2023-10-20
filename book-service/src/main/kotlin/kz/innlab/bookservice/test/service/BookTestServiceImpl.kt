@@ -43,6 +43,25 @@ class BookTestServiceImpl: BookTestService {
         return repository.findAllByBookIdAndDeletedAtIsNull(bookId)
     }
 
+
+    override fun getBookTestProgressByBookId(bookId: UUID, testUserId: UUID): Any {
+        // Find all tests for the given book
+        val tests = repository.findAllByBookIdAndDeletedAtIsNull(bookId)
+
+        // Extract and map test IDs from the tests
+        val testIds = tests.map { it.id }
+
+        // Find user test progress records for each test ID and the specified user
+        val userTestComplete = mutableListOf<Optional<BookTestUser>>()
+
+        for (testId in testIds) {
+            val userTestProgress = testUserRepository.findAllByAndTestIdAndUserIdAndDeletedAtIsNull(testId!!, testUserId)
+            userTestComplete.add(userTestProgress)
+        }
+
+        return mapOf("complete" to userTestComplete.size, "testCount" to tests.size)
+    }
+
     override fun getBookTestById(id: UUID, name: String): Optional<BookTest> {
         val questions = questionRepository.findByTestIdAndDeletedAtIsNull(id)
         val bookTest = repository.findByIdAndDeletedAtIsNull(id)

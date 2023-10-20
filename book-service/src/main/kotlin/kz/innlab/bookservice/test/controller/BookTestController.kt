@@ -23,6 +23,12 @@ class BookTestController {
         return service.getBookTestByBookId(bookId, principal.name)
     }
 
+    @GetMapping("/{bookId}/complete")
+    @PreAuthorize("isAuthenticated()")
+    fun getBookTestProgressByBookId(@PathVariable bookId: UUID, principal: Principal): Any {
+        return service.getBookTestProgressByBookId(bookId, UUID.fromString(principal.name))
+    }
+
     @GetMapping("/get/{id}")
     @PreAuthorize("isAuthenticated()")
     fun getBookTestById(@PathVariable id: UUID, principal: Principal): Optional<BookTest> {

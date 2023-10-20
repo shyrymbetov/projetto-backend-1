@@ -7,4 +7,5 @@ import java.util.*
 interface BookTestUserRepository: JpaRepository<BookTestUser, UUID> {
     fun findFirstByTestIdAndUserIdAndDeletedAtIsNullOrderByCreatedAtDesc(testId: UUID, userId: UUID): Optional<BookTestUser>
     fun findByIdAndDeletedAtIsNull(id: UUID): Optional<BookTestUser>
+    fun findAllByAndTestIdAndUserIdAndDeletedAtIsNull(testId: UUID, userId: UUID): Optional<BookTestUser>
 }
