@@ -5,7 +5,7 @@ import java.util.*
 
 /**
  * @project microservice-template
- * @author Bekzat Sailaubayev on 17.04.2022
+ * @author Yerassyl Shyrymbetov on 17.04.2022
  */
 
 @JsonInclude(JsonInclude.Include.NON_NULL)

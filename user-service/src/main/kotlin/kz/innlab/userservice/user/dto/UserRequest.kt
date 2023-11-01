@@ -19,6 +19,7 @@ class UserRequest {
         set(value) {
             field = value ?: ""
         }
+    var phone: String? = null
     var blocked: Timestamp? = null
     var avatar: UUID? = null
     var roles: List<String> = arrayListOf()

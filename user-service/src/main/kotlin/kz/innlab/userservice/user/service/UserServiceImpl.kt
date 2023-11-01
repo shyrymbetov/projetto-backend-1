@@ -66,6 +66,7 @@ class UserServiceImpl : UserService {
             user.name,
             user.lastName,
             user.avatar,
+            user.phone,
             user.provider,
             user.fio,
             user.email,

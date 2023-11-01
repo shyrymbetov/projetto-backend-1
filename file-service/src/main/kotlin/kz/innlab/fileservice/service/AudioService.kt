@@ -12,7 +12,7 @@ import java.util.*
 
 /**
  * @project microservice-template
- * @author Bekzat Sailaubayev on 08.02.2023
+ * @author Yerassyl Shyrymbetov on 08.02.2023
  */
 @Service
 class AudioService: FileService() {

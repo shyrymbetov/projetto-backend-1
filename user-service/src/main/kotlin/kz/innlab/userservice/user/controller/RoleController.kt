@@ -40,21 +40,11 @@ class RoleController {
         return roleService.getList()
     }
 
-//    @PostMapping("/")
-////    @PreAuthorize("#oauth2.hasScope('server')")
-//    fun createRoles(): Status {
-//        return roleService.createRoles()
-//    }
-
-//    @GetMapping("/priority/{userName}")
+    @PostMapping("/create-roles")
 //    @PreAuthorize("#oauth2.hasScope('server')")
-//    fun getUserRolePriority(@PathVariable userName: String): Long {
-//        return roleService.getUserRolePriority(userName)
-//    }
+    fun createRoles(): Status {
+        return roleService.createRoles()
+    }
 
-//    @PreAuthorize("#oauth2.hasScope('server') or hasRole('ADMIN')")
-//    @PostMapping("/create")
-//    fun createUser(@Valid @RequestBody user: NewUserRequest): UUID? {
-//        return userService.create(user)
-//    }
+
 }

@@ -9,7 +9,7 @@ import org.springframework.security.oauth2.provider.expression.OAuth2SecurityExp
 
 /**
  * @project microservice-template
- * @author Bekzat Sailaubayev on 05.04.2022
+ * @author Yerassyl Shyrymbetov on 05.04.2022
  */
 class OAuth2MethodSecurityExpressionHandler : DefaultMethodSecurityExpressionHandler() {
     init {

@@ -10,5 +10,6 @@ data class NewUserDto(
     var firstName: String? = null,
     var lastName: String? = null,
     val emailOptional: String? = null,
-    val provider: @NotNull UserProviderType? = null
+    val provider: @NotNull UserProviderType? = null,
+    val phone: String? = null
 )

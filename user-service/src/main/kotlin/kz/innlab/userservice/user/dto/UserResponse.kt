@@ -13,6 +13,7 @@ class UserResponse(
     var name: String? = null,
     var lastName: String? = null,
     var avatar: UUID? = null,
+    var phone: String? = null,
     var provider: UserProviderType? = UserProviderType.LOCAL,
     var fio: String? = null,
     var email: String = "",

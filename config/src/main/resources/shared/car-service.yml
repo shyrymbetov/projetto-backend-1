@@ -1,0 +1,36 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5431/easywash
+    username: postgres
+    password:
+
+    driverClassName: org.postgresql.Driver
+    platform: postgres
+  debug: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
+
+server:
+  servlet:
+    context-path: /cars
+  port: 3030
+
+feign:
+  hystrix:
+    enabled: true
+
+security:
+  oauth2:
+    client:
+      client-id: car-service
+      client-secret: ${CAR_SERVICE_PASSWORD}
+      access-token-uri: http://localhost:5001/uaa/oauth/token
+      grant-type: client_credentials
+      scope: server

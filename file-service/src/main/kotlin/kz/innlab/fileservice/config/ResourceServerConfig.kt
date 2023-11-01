@@ -25,7 +25,7 @@ import java.io.IOException
 
 /**
  * @project microservice-template
- * @author Bekzat Sailaubayev on 28.03.2022
+ * @author Yerassyl Shyrymbetov on 28.03.2022
  */
 @Configuration
 @EnableResourceServer

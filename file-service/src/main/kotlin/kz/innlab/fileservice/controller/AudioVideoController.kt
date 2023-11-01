@@ -15,7 +15,7 @@ import java.util.*
 
 
 /**
- * @author Bekzat Sailaubayev on 07.02.2023
+ * @author Yerassyl Shyrymbetov on 07.02.2023
  * @project microservice-template
  */
 @RestController

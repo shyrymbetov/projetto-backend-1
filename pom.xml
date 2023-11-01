@@ -9,11 +9,11 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>kz.innlab</groupId>
-    <artifactId>softbooks</artifactId>
+    <artifactId>easywash</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>softbooks</name>
-    <description>softbooks</description>
+    <name>easywash</name>
+    <description>easywash</description>
 
     <properties>
         <java.version>17</java.version>

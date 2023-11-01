@@ -7,7 +7,7 @@ import org.springframework.security.config.annotation.method.configuration.Globa
 
 /**
  * @project microservice-template
- * @author Bekzat Sailaubayev on 05.04.2022
+ * @author Yerassyl Shyrymbetov on 05.04.2022
  */
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class MethodSecurityConfig : GlobalMethodSecurityConfiguration() {

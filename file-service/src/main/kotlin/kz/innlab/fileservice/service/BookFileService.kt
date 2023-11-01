@@ -31,7 +31,7 @@ import kz.innlab.fileservice.model.File as FileModel
 
 /**
  * @project edm-spring
- * @author Bekzat Sailaubayev on 12.02.2022
+ * @author Yerassyl Shyrymbetov on 12.02.2022
  */
 @Service
 class BookFileService {

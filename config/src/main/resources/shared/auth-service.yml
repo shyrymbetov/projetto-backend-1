@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/softbooks
+    url: jdbc:postgresql://localhost:5431/easywash
     username: postgres
-    password: postgres
+    password:
 
     driverClassName: org.postgresql.Driver
     platform: postgres

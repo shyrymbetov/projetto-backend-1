@@ -9,7 +9,7 @@ import java.util.*
 
 /**
  * @project microservice-template
- * @author Bekzat Sailaubayev on 17.04.2022
+ * @author Yerassyl Shyrymbetov on 17.04.2022
  */
 internal class AuditorAwareImpl: AuditorAware<String?> {
     override fun getCurrentAuditor(): Optional<String?> {

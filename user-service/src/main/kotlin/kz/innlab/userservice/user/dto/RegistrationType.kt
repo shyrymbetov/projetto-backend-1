@@ -5,5 +5,5 @@ package kz.innlab.userservice.user.dto
  * @author Bekzat Sailaubayev on 03.01.2023
  */
 enum class RegistrationType {
-    TEACHER, STUDENT
+    EMPLOYEE, CLIENT
 }

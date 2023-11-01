@@ -43,7 +43,7 @@ jobs:
         with:
           context: ./user-service
           push: true
-          tags: innlabkz/softbooks-user-service:latest
+          tags: innlabkz/easywash-user-service:latest
 
   book-service:
     runs-on: ubuntu-latest
@@ -84,7 +84,7 @@ jobs:
         with:
           context: ./book-service
           push: true
-          tags: innlabkz/softbooks-book-service:latest
+          tags: innlabkz/easywash-book-service:latest
 
   file-service:
     runs-on: ubuntu-latest
@@ -124,7 +124,7 @@ jobs:
         with:
           context: ./file-service
           push: true
-          tags: innlabkz/softbooks-file-service:latest
+          tags: innlabkz/easywash-file-service:latest
 
   auth-service:
     runs-on: ubuntu-latest
@@ -164,7 +164,7 @@ jobs:
         with:
           context: ./auth-service
           push: true
-          tags: innlabkz/softbooks-auth-service:latest
+          tags: innlabkz/easywash-auth-service:latest
 
   mail-service:
     runs-on: ubuntu-latest
@@ -204,4 +204,4 @@ jobs:
         with:
           context: ./mail-service
           push: true
-          tags: innlabkz/softbooks-mail-service:latest
+          tags: innlabkz/easywash-mail-service:latest
