@@ -1,4 +1,4 @@
-package kz.innlab.bookservice.system.dto
+package kz.innlab.carservice.system.dto
 
 import java.util.*
 
@@ -10,5 +10,5 @@ data class PermissionDTO(
     var userId: UUID?,
     var chapter: String?
 ) {
-    var module: String = "BOOK"
+    var module: String = "CAR"
 }

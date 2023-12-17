@@ -1,4 +1,4 @@
-package kz.innlab.bookservice.system.config
+package kz.innlab.carservice.system.config
 
 import feign.RequestInterceptor
 import io.micrometer.core.instrument.util.IOUtils

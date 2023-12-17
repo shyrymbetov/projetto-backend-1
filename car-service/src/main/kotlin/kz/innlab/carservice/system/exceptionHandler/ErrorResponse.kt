@@ -1,4 +1,4 @@
-package kz.innlab.bookservice.system.exceptionHandler
+package kz.innlab.carservice.system.exceptionHandler
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import java.util.*

@@ -1,8 +1,8 @@
-package kz.innlab.bookservice.system.model
+package kz.innlab.carservice.system.model
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType
-import kz.innlab.bookservice.system.dto.EventLogs
+import kz.innlab.carservice.system.dto.EventLogs
 import lombok.AccessLevel
 import lombok.Getter
 import lombok.Setter

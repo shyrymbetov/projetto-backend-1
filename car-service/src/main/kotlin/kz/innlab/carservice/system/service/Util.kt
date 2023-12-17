@@ -1,4 +1,4 @@
-package kz.innlab.bookservice.system.service
+package kz.innlab.carservice.system.service
 
 import org.springframework.context.annotation.Configuration
 import java.util.*

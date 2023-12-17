@@ -51,7 +51,7 @@ class UserController {
     }
 
     @PostMapping("")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+//    @PreAuthorize("hasAnyRole('ADMIN')")
     fun createNewAccount(
         @Valid @RequestBody user: UserRequest
     ): Status {

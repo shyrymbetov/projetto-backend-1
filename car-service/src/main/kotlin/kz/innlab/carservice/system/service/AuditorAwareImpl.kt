@@ -1,4 +1,4 @@
-package kz.innlab.bookservice.system.service
+package kz.innlab.carservice.system.service
 
 import org.springframework.data.domain.AuditorAware
 import org.springframework.security.core.Authentication

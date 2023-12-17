@@ -1,6 +1,6 @@
-package kz.innlab.bookservice.system.client
+package kz.innlab.carservice.system.client
 
-import kz.innlab.bookservice.system.dto.PermissionDTO
+import kz.innlab.carservice.system.dto.PermissionDTO
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody

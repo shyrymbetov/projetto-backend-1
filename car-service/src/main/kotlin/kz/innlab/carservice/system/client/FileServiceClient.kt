@@ -1,6 +1,6 @@
-package kz.innlab.bookservice.system.client
+package kz.innlab.carservice.system.client
 
-import kz.innlab.bookservice.book.dto.Status
+import kz.innlab.carservice.general.dto.Status
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.PostMapping
 

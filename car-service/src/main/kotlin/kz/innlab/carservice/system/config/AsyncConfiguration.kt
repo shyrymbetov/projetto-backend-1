@@ -1,4 +1,4 @@
-package kz.innlab.bookservice.system.config
+package kz.innlab.carservice.system.config
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.annotation.EnableAsync

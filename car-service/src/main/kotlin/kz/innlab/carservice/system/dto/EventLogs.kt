@@ -1,4 +1,4 @@
-package kz.innlab.bookservice.system.dto
+package kz.innlab.carservice.system.dto
 
 import java.sql.Timestamp
 

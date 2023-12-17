@@ -1,4 +1,4 @@
-package kz.innlab.bookservice.system.exceptionHandler
+package kz.innlab.carservice.system.exceptionHandler
 
 import lombok.extern.slf4j.Slf4j
 import org.apache.commons.lang3.exception.ExceptionUtils

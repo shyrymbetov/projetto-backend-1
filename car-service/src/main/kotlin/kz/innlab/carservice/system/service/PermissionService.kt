@@ -1,7 +1,7 @@
-package kz.innlab.bookservice.system.service
+package kz.innlab.carservice.system.service
 
-import kz.innlab.bookservice.system.client.UserServiceClient
-import kz.innlab.bookservice.system.dto.PermissionDTO
+import kz.innlab.carservice.system.client.UserServiceClient
+import kz.innlab.carservice.system.dto.PermissionDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.util.*

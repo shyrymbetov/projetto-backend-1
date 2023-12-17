@@ -1,4 +1,4 @@
-package kz.innlab.bookservice.system.config.custom
+package kz.innlab.carservice.system.config.custom
 
 import org.aopalliance.intercept.MethodInvocation
 import org.springframework.expression.spel.support.StandardEvaluationContext

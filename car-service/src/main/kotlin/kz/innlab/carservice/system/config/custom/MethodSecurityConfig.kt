@@ -1,4 +1,4 @@
-package kz.innlab.bookservice.system.config.custom
+package kz.innlab.carservice.system.config.custom
 
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity

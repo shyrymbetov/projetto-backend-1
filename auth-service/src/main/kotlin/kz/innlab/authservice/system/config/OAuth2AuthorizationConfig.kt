@@ -158,6 +158,11 @@ class OAuth2AuthorizationConfig : AuthorizationServerConfigurerAdapter() {
             .secret(env.getProperty("BOOK_SERVICE_PASSWORD"))
             .authorizedGrantTypes("client_credentials", "refresh_token")
             .scopes("server")
+            .and()
+            .withClient("car-service")
+            .secret(env.getProperty("CAR_SERVICE_PASSWORD"))
+            .authorizedGrantTypes("client_credentials", "refresh_token")
+            .scopes("server")
             .accessTokenValiditySeconds(20000)
             .refreshTokenValiditySeconds(20000)
     }

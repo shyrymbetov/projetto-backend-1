@@ -1,6 +1,6 @@
-package kz.innlab.bookservice.system.config
+package kz.innlab.carservice.system.config
 
-import kz.innlab.bookservice.system.service.AuditorAwareImpl
+import kz.innlab.carservice.system.service.AuditorAwareImpl
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.domain.AuditorAware
