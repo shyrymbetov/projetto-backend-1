@@ -16,11 +16,14 @@ spring:
       globalcors:
         corsConfigurations:
           '[/**]':
-            allowedOrigins:
-              - "http://localhost:4200"
-              - "http://localhost:9753"
+#            allowedOrigins:
+#              - "http://localhost:4200"
+#              - "http://localhost:9753"
+#              - "http://localhost:5173"
+            allowedOrigins: "http://localhost:5173"
             allowedHeaders: "*"
             allowedMethods: "*"
+            allowCredentials: true
       routes:
         - id: user_service
           uri: lb://USER-SERVICE/
