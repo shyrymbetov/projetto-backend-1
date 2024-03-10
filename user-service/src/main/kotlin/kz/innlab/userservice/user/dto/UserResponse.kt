@@ -10,7 +10,6 @@ import kotlin.jvm.Transient
 class UserResponse(
     var id: UUID? = null,
     var firstName: String? = null,
-    var name: String? = null,
     var lastName: String? = null,
     var avatar: UUID? = null,
     var phone: String? = null,

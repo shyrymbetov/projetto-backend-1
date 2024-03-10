@@ -1,11 +1,9 @@
-package kz.innlab.carservice.car.controller
+package kz.innlab.carservice.general.controller
 
 
 import kz.innlab.carservice.car.service.CarBodyService
-import kz.innlab.carservice.car.service.CarService
 import kz.innlab.carservice.general.dto.Status
 import kz.innlab.carservice.general.model.CarBody
-import kz.innlab.carservice.general.model.Cars
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*

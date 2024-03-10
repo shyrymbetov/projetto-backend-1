@@ -9,5 +9,5 @@ interface WashingCenterRepository: JpaRepository<WashingCenter, UUID>, JpaSpecif
     fun findByIdAndDeletedAtIsNull(id: UUID): Optional<WashingCenter>
     fun findAllByIdInAndDeletedAtIsNull(carWashBoxIds: List<UUID>): List<WashingCenter>
     fun findAllByDeletedAtIsNull(): List<WashingCenter>
-    fun findAllByAdminAndDeletedAtIsNull(id: UUID): List<WashingCenter>
+    fun findAllByEmployeeAndDeletedAtIsNull(id: UUID): List<WashingCenter>
 }

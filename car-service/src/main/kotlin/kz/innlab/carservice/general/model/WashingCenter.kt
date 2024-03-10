@@ -4,11 +4,12 @@ import com.vladmihalcea.hibernate.type.array.StringArrayType
 import kz.innlab.carservice.system.model.Auditable
 import org.hibernate.annotations.TypeDef
 import org.hibernate.annotations.TypeDefs
+import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
 
 @Entity
-@Table(name = "washing_center")
+@Table(name = "car_washing_center")
 @TypeDefs(
     TypeDef(
         name = "string-array",
@@ -38,8 +39,8 @@ class WashingCenter: Auditable<String?>() {
             field = value.lowercase().replace(" ", "") // remove all space
         }
 
-    @Column(name = "ADMIN", nullable = false)
-    var admin: UUID? = null
+    @Column(name = "EMPLOYEE", nullable = false)
+    var employee: UUID? = null
 
     @Column(name = "DESCRIPTION", columnDefinition = "character varying", nullable = true)
     var description: String? = null
@@ -51,3 +52,5 @@ class WashingCenter: Auditable<String?>() {
     val carWashPrice: MutableList<CarWashPrice> = mutableListOf()
 
 }
+
+

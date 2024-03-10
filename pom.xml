@@ -39,7 +39,6 @@
         <module>gateway</module>
         <module>auth-service</module>
         <module>user-service</module>
-        <module>book-service</module>
         <module>file-service</module>
         <module>mail-service</module>
     </modules>

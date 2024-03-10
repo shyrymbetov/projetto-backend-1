@@ -23,7 +23,7 @@ class WashingCenterServiceImpl : WashingCenterService {
     override fun createWashingCenter(washingCenter: WashingCenter, userId: String): Status {
         val status = Status()
 
-        washingCenter.admin = UUID.fromString(userId)
+        washingCenter.employee = UUID.fromString(userId)
 
         repository.save(washingCenter)
 
@@ -58,9 +58,9 @@ class WashingCenterServiceImpl : WashingCenterService {
         val status = Status()
         status.message = String.format("Washing Center %s does not exist", id)
         repository.findByIdAndDeletedAtIsNull(id)
-            .ifPresent { book ->
-                book.deletedAt = Timestamp(System.currentTimeMillis())
-                repository.save(book)
+            .ifPresent { car ->
+                car.deletedAt = Timestamp(System.currentTimeMillis())
+                repository.save(car)
 
                 status.status = 1
                 status.message = String.format("Washing Center %s has been deleted", id)
@@ -70,7 +70,7 @@ class WashingCenterServiceImpl : WashingCenterService {
     }
 
     override fun getWashingCentersListMy(params: MutableMap<String, String>, employee: String): List<WashingCenter> {
-        return repository.findAllByAdminAndDeletedAtIsNull(UUID.fromString(employee))
+        return repository.findAllByEmployeeAndDeletedAtIsNull(UUID.fromString(employee))
     }
 
     override fun getWashingCenterById(id: UUID): Optional<WashingCenter> {

@@ -1,5 +1,6 @@
 package kz.innlab.carservice.general.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.vladmihalcea.hibernate.type.array.StringArrayType
 import kz.innlab.carservice.system.model.Auditable
 import org.hibernate.annotations.TypeDef
@@ -22,4 +23,8 @@ class CarBody: Auditable<String?>() {
 
     @Column(name = "type", columnDefinition = "character varying", nullable = false, unique = true)
     var type: String? = null
+
+    @OneToMany(mappedBy = "carBody", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @JsonIgnore
+    val carWashPrice: MutableList<CarWashPrice> = mutableListOf()
 }

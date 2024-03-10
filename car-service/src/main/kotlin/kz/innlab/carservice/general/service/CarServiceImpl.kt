@@ -33,7 +33,7 @@ class CarServiceImpl : CarService {
         }
         if (cars.carBody == null) {
             status.status = 1
-            status.message = String.format("Car Body: %s doesn't exist", cars.carBodyId)
+            status.message = String.format("Car: %s doesn't exist", cars.carBodyId)
             status.value = cars.id
             return status
         }

@@ -63,7 +63,6 @@ class UserServiceImpl : UserService {
         return UserResponse(
             user.id,
             user.firstName,
-            user.name,
             user.lastName,
             user.avatar,
             user.phone,

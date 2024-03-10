@@ -1,5 +1,6 @@
 package kz.innlab.carservice.general.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.vladmihalcea.hibernate.type.array.StringArrayType
 import kz.innlab.carservice.system.model.Auditable
 import org.hibernate.annotations.TypeDef
@@ -25,11 +26,10 @@ class CarWashBox: Auditable<String?>() {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "washing_center_id") // Specify the foreign key column
+    @JsonIgnore()
     var washingCenter: WashingCenter? = null
 
     @Column(name = "washing_center_id", insertable = false, updatable = false, nullable = false)
     var washingCenterId: UUID? = null
 
-    @OneToMany(mappedBy = "carWashBox", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val carWashTime: MutableList<CarWashTime> = mutableListOf()
 }

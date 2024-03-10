@@ -45,16 +45,6 @@ class CarWashBoxServiceImpl: CarWashBoxService {
         val status = Status()
         repository.findByIdAndDeletedAtIsNull( UUID.fromString(carWashBoxId) ).ifPresentOrElse({
 
-            washingCenterRepository.findByIdAndDeletedAtIsNull(carWashBox.washingCenterId!!).ifPresent { washingCenter ->
-                carWashBox.washingCenter = washingCenter
-            }
-
-            if (carWashBox.washingCenter == null) {
-                status.status = 0
-                status.message = String.format("Washing Center: %s doesn't exist", carWashBox.washingCenterId)
-                status.value = carWashBox.washingCenterId
-            }
-
             it.name = carWashBox.name
             // TODO update carWashTime
             repository.save(it)

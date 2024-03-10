@@ -1,4 +1,4 @@
-package kz.innlab.carWashBoxService.car.controller
+package kz.innlab.carservice.general.controller
 
 import kz.innlab.carservice.car.service.CarWashBoxService
 import kz.innlab.carservice.general.model.CarWashBox

@@ -1,4 +1,4 @@
-package kz.innlab.carservice.car.controller
+package kz.innlab.carservice.general.controller
 
 
 import kz.innlab.carservice.general.model.WashingCenter
@@ -18,14 +18,14 @@ class WashingCenterController {
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('ADMIN')")
-    fun createWashingCenter(@RequestBody WashingCenter: WashingCenter, principal: Principal): Status {
-        return washingCenterService.createWashingCenter(WashingCenter, principal.name)
+    fun createWashingCenter(@RequestBody washingCenter: WashingCenter, principal: Principal): Status {
+        return washingCenterService.createWashingCenter(washingCenter, principal.name)
     }
 
     @PutMapping("/edit/{washingCenterId}")
     @PreAuthorize("isAuthenticated()")
-    fun editWashingCenter(@RequestBody WashingCenter: WashingCenter, @PathVariable washingCenterId: String, principal: Principal): Status {
-        return washingCenterService.editWashingCenter(WashingCenter, washingCenterId)
+    fun editWashingCenter(@RequestBody washingCenter: WashingCenter, @PathVariable washingCenterId: String, principal: Principal): Status {
+        return washingCenterService.editWashingCenter(washingCenter, washingCenterId)
     }
 
     @DeleteMapping("/delete/{id}")

@@ -1,4 +1,4 @@
-package kz.innlab.carservice.car.controller
+package kz.innlab.carservice.general.controller
 
 
 

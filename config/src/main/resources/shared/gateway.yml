@@ -37,11 +37,6 @@ spring:
           predicates:
             - Path=/file/**
 
-        - id: book_service
-          uri: lb://BOOK-SERVICE/
-          predicates:
-            - Path=/books/**
-
         - id: car_service
           uri: lb://CAR-SERVICE/
           predicates:

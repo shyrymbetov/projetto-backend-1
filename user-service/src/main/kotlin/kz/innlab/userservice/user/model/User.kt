@@ -27,8 +27,6 @@ class User: Auditable<String?>() {
     @Column(name = "FIRST_NAME", columnDefinition = "character varying")
     var firstName: String? = null
 
-    var name: String? = null
-
     @Column(name = "LAST_NAME", columnDefinition = "character varying")
     var lastName: String? = null
 
