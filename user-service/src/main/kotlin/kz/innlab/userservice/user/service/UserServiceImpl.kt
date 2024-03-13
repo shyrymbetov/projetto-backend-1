@@ -149,6 +149,7 @@ class UserServiceImpl : UserService {
             newUser.password = user.password ?: "123"
             newUser.roles = user.roles
             newUser.enabled = false
+            newUser.phone = user.phone ?: "87051231234"
 
             status.status = 1
             status.message = "Success"

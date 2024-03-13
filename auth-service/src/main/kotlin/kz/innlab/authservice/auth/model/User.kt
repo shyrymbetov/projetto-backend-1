@@ -29,8 +29,6 @@ class User: Auditable<String?>() {
     @Column(name = "FIRST_NAME", columnDefinition = "character varying")
     var firstName: String? = null
 
-    var name: String? = null
-
     @Column(name = "LAST_NAME", columnDefinition = "character varying")
     var lastName: String? = null
 
@@ -79,7 +77,7 @@ class User: Auditable<String?>() {
             field = value.lowercase().replace(" ", "") // remove all space
         }
 
-    var enabled: Boolean? = null // a emailVerify
+    var enabled: Boolean? = null
     var blocked: Timestamp? = null
     var blockCodeSend: Timestamp? = null
     var receivingFailedCountCode: Int? = 0
@@ -90,7 +88,7 @@ class User: Auditable<String?>() {
     @JoinTable(name = "USERS_ROLES",
         joinColumns = [JoinColumn(name = "USER_ID", referencedColumnName = "id")],
         inverseJoinColumns = [JoinColumn(name = "ROLE_ID", referencedColumnName = "id")])
-    var rolesCollection: Collection<kz.innlab.authservice.auth.model.Role> = listOf()
+    var rolesCollection: Collection<Role> = listOf()
 
     @Transient
     var roles: List<String> = arrayListOf()
@@ -101,9 +99,6 @@ class User: Auditable<String?>() {
             }
             return field
         }
-
-    @Transient
-    var status: Boolean = true
 
     fun incrementLoginAttempts() { loginAttempts = loginAttempts!! + 1 }
 

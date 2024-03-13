@@ -10,6 +10,7 @@ data class RegistrationUserDto(
     var firstName: String? = null,
     var lastName: String? = null,
     var type: RegistrationType? = RegistrationType.CLIENT,
+    var phone: String? = null,
     var email: String = "",
     var password: String? = null,
     var roles: ArrayList<String> = arrayListOf()
