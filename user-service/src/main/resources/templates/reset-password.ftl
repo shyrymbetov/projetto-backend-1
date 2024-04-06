@@ -49,25 +49,25 @@
             </tr>
             <tr>
                 <td>
-                    <p class="comand">Спасибо, <br> Команда InnLab</p>
+                    <p class="comand">Спасибо, <br> Команда YMA</p>
                 </td>
             </tr>
             <tr>
                 <td>
                     <div class="question">
-                        <p style="line-height: 20px;">Вопросы? Свяжитесь с нами по адресу faq@mugalim.kz.
-                            Если вы не хотите больше получать электронные письма от Mugalim</p>
+                        <p style="line-height: 20px;">Вопросы? Свяжитесь с нами по адресу shyrymbetov@gmail.com.
+                            Если вы не хотите больше получать электронные письма от YMA</p>
                     </div>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <p style="line-height: 20px;">Город Алматы, Сейфуллина 609.</p>
+                    <p style="line-height: 20px;">Город Алматы, Манаса 34/1".</p>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <p style="line-height: 20px;">Copyright © 2021 - 2023<a href="" class="innLab">TOO INNLAB</a>, All rights reserved.</p>
+                    <p style="line-height: 20px;">Copyright © 2023<a href="" class="innLab">TOO YMA</a>, All rights reserved.</p>
                 </td>
             </tr>
             </tbody>

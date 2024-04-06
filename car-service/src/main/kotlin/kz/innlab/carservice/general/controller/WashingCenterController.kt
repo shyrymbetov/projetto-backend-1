@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import java.security.Principal
 import java.util.*
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/washing-center")
@@ -17,7 +18,7 @@ class WashingCenterController {
     lateinit var washingCenterService: WashingCenterService
 
     @PostMapping("/create")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('EMPLOYEE')")
     fun createWashingCenter(@RequestBody washingCenter: WashingCenter, principal: Principal): Status {
         return washingCenterService.createWashingCenter(washingCenter, principal.name)
     }
@@ -44,5 +45,11 @@ class WashingCenterController {
     @PreAuthorize("isAuthenticated()")
     fun getWashingCenterById(@PathVariable id: UUID, principal: Principal): Optional<WashingCenter> {
         return washingCenterService.getWashingCenterById(id)
+    }
+
+    @PostMapping("/favorite")
+    @PreAuthorize("isAuthenticated()")
+    fun favoriteWashingCenter(@Valid @RequestBody id: String, principal: Principal): Status {
+        return washingCenterService.addFavoriteWashingCeter(UUID.fromString(id), principal.name)
     }
 }

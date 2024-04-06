@@ -1,7 +1,9 @@
 package kz.innlab.carservice.car.service
 
 import kz.innlab.carservice.general.dto.Status
+import kz.innlab.carservice.general.model.UserWashingCenter
 import kz.innlab.carservice.general.model.WashingCenter
+import kz.innlab.carservice.general.repository.UserWashingCenterRepository
 import kz.innlab.carservice.general.repository.WashingCenterRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,6 +17,9 @@ class WashingCenterServiceImpl : WashingCenterService {
 
     @Autowired
     lateinit var repository: WashingCenterRepository
+
+    @Autowired
+    lateinit var userWashingCenterRepository: UserWashingCenterRepository
 
     //    @Autowired
     //    lateinit var fileServiceClient: FileServiceClient
@@ -75,6 +80,15 @@ class WashingCenterServiceImpl : WashingCenterService {
 
     override fun getWashingCenterById(id: UUID): Optional<WashingCenter> {
         return repository.findByIdAndDeletedAtIsNull(id)
+    }
+
+    override fun addFavoriteWashingCeter(id: UUID, userId: String): Status {
+        val userWashingCenter = UserWashingCenter()
+        userWashingCenter.userId = UUID.fromString(userId)
+        userWashingCenter.washingCenterId = id
+        userWashingCenterRepository.save(userWashingCenter)
+
+        return Status(1, "Successfully added to favorite")
     }
 
 

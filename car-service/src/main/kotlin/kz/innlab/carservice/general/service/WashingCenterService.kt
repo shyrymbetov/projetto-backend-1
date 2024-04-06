@@ -10,4 +10,5 @@ interface WashingCenterService {
     fun deleteWashingCenter(id: UUID, userId: String): Status
     fun getWashingCentersListMy(params: MutableMap<String, String>, employee: String): List<WashingCenter>
     fun getWashingCenterById(id: UUID): Optional<WashingCenter>
+    fun addFavoriteWashingCeter(id: UUID, userId: String): Status
 }
