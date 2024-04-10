@@ -35,10 +35,16 @@ class WashingCenterController {
         return washingCenterService.deleteWashingCenter(id, principal.name)
     }
 
-    @GetMapping("/list")
+    @GetMapping("/list-my")
     @PreAuthorize("isAuthenticated()")
     fun getWashingCenterListMy(@RequestParam params: MutableMap<String, String>, principal: Principal): List<WashingCenter> {
         return washingCenterService.getWashingCentersListMy(params, principal.name)
+    }
+
+    @GetMapping("/list")
+    @PreAuthorize("isAuthenticated()")
+    fun getWashingCenterList(@RequestParam params: MutableMap<String, String>, principal: Principal): List<WashingCenter> {
+        return washingCenterService.getWashingCentersList(params)
     }
 
     @GetMapping("/{id}")

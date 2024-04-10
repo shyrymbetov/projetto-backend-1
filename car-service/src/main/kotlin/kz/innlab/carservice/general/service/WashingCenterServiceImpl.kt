@@ -78,6 +78,10 @@ class WashingCenterServiceImpl : WashingCenterService {
         return repository.findAllByEmployeeAndDeletedAtIsNull(UUID.fromString(employee))
     }
 
+    override fun getWashingCentersList(params: MutableMap<String, String>): List<WashingCenter> {
+        return repository.findAllByDeletedAtIsNull()
+    }
+
     override fun getWashingCenterById(id: UUID): Optional<WashingCenter> {
         return repository.findByIdAndDeletedAtIsNull(id)
     }
