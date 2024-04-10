@@ -24,6 +24,9 @@ class CarBody: Auditable<String?>() {
     @Column(name = "type", columnDefinition = "character varying", nullable = false, unique = true)
     var type: String? = null
 
+    @Column(name = "ru_name", columnDefinition = "character varying")
+    var ruName: String? = null
+
     @OneToMany(mappedBy = "carBody", cascade = [CascadeType.ALL], orphanRemoval = true)
     @JsonIgnore
     val carWashPrice: MutableList<CarWashPrice> = mutableListOf()

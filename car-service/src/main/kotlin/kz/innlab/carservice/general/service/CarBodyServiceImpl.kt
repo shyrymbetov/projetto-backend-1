@@ -40,6 +40,7 @@ class CarBodyServiceImpl : CarBodyService {
         val status = Status()
         repository.findByIdAndDeletedAtIsNull( UUID.fromString(carBodyId) ).ifPresentOrElse({
             it.type = carBody.type
+            it.ruName = carBody.ruName
             repository.save(it)
             status.status = 1
             status.message = String.format("Car Body %s has been edited", it.id)

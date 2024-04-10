@@ -86,13 +86,31 @@ class WashingCenterServiceImpl : WashingCenterService {
         return repository.findByIdAndDeletedAtIsNull(id)
     }
 
-    override fun addFavoriteWashingCeter(id: UUID, userId: String): Status {
+    override fun getListWashingCentersByIds(ids: List<UUID>): List<WashingCenter> {
+        val result: MutableList<WashingCenter> = mutableListOf()
+        repository.findAllByIdInAndDeletedAtIsNull(ids).map {
+            result.add(it)
+        }
+
+        return result
+    }
+
+    override fun getMyFavoriteWashingCenter(userId: String): List<UserWashingCenter> {
+        return userWashingCenterRepository.findAllByUserId(UUID.fromString(userId))
+    }
+
+    override fun addFavoriteWashingCenter(id: UUID, userId: String): Status {
         val userWashingCenter = UserWashingCenter()
         userWashingCenter.userId = UUID.fromString(userId)
         userWashingCenter.washingCenterId = id
         userWashingCenterRepository.save(userWashingCenter)
 
         return Status(1, "Successfully added to favorite")
+    }
+
+    override fun unFavoriteWashingCenter(id: UUID): Status {
+        userWashingCenterRepository.deleteById(id)
+        return Status(1, "Successfully deleted from favorite")
     }
 
 

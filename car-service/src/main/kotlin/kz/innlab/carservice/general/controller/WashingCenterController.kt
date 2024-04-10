@@ -4,12 +4,12 @@ package kz.innlab.carservice.general.controller
 import kz.innlab.carservice.general.model.WashingCenter
 import kz.innlab.carservice.car.service.WashingCenterService
 import kz.innlab.carservice.general.dto.Status
+import kz.innlab.carservice.general.model.UserWashingCenter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import java.security.Principal
 import java.util.*
-import javax.validation.Valid
 
 @RestController
 @RequestMapping("/washing-center")
@@ -47,15 +47,34 @@ class WashingCenterController {
         return washingCenterService.getWashingCentersList(params)
     }
 
+
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     fun getWashingCenterById(@PathVariable id: UUID, principal: Principal): Optional<WashingCenter> {
         return washingCenterService.getWashingCenterById(id)
     }
 
-    @PostMapping("/favorite")
+    @PostMapping("/washing-centers-by-ids")
     @PreAuthorize("isAuthenticated()")
-    fun favoriteWashingCenter(@Valid @RequestBody id: String, principal: Principal): Status {
-        return washingCenterService.addFavoriteWashingCeter(UUID.fromString(id), principal.name)
+    fun getListCoauthorsByIds(@RequestBody listOfCoauthorIds: List<UUID>, principal: Principal): List<WashingCenter> {
+        return washingCenterService.getListWashingCentersByIds(listOfCoauthorIds)
+    }
+
+    @GetMapping("/favorite")
+    @PreAuthorize("isAuthenticated()")
+    fun getMyFavoriteWashingCenter(principal: Principal): List<UserWashingCenter> {
+        return washingCenterService.getMyFavoriteWashingCenter(principal.name)
+    }
+
+    @PostMapping("/favorite/{washingCenterId}")
+    @PreAuthorize("isAuthenticated()")
+    fun favoriteWashingCenter( @PathVariable washingCenterId: String, principal: Principal): Status {
+        return washingCenterService.addFavoriteWashingCenter(UUID.fromString(washingCenterId), principal.name)
+    }
+
+    @DeleteMapping("/unfavorite/{id}")
+    @PreAuthorize("isAuthenticated()")
+    fun unFavoriteWashingCenter( @PathVariable id: String, principal: Principal): Status {
+        return washingCenterService.unFavoriteWashingCenter(UUID.fromString(id))
     }
 }
