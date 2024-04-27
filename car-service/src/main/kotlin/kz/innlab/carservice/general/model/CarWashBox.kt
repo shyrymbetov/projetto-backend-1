@@ -1,10 +1,12 @@
 package kz.innlab.carservice.general.model
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.vladmihalcea.hibernate.type.array.StringArrayType
 import kz.innlab.carservice.system.model.Auditable
 import org.hibernate.annotations.TypeDef
 import org.hibernate.annotations.TypeDefs
+import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
 

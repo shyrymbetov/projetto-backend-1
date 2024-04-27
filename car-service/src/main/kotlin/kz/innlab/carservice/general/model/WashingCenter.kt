@@ -1,9 +1,11 @@
 package kz.innlab.carservice.general.model
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import com.vladmihalcea.hibernate.type.array.StringArrayType
 import kz.innlab.carservice.system.model.Auditable
 import org.hibernate.annotations.TypeDef
 import org.hibernate.annotations.TypeDefs
+import java.sql.Time
 import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
@@ -32,6 +34,14 @@ class WashingCenter: Auditable<String?>() {
 
     @Column(name = "LAT", nullable = false)
     var lat: String? = null
+
+    @JsonFormat(pattern = "HH:mm:ss")
+    @Column(name = "start_time", columnDefinition = "TIME", nullable = false)
+    var startTime: Time? = null
+
+    @JsonFormat(pattern = "HH:mm:ss")
+    @Column(name = "end_time", columnDefinition = "TIME", nullable = false)
+    var endTime: Time? = null
 
     @Column(name = "PHONE", unique = true, nullable = false)
     var phone: String = ""

@@ -3,6 +3,7 @@ package kz.innlab.carservice.general.controller
 
 import kz.innlab.carservice.car.service.CarBodyService
 import kz.innlab.carservice.car.service.OrderService
+import kz.innlab.carservice.general.dto.OrderStatusEnum
 import kz.innlab.carservice.general.dto.Status
 import kz.innlab.carservice.general.model.CarBody
 import kz.innlab.carservice.general.model.Order
@@ -31,13 +32,19 @@ class OrderController {
         return orderService.editOrder(order, orderId)
     }
 
+    @PutMapping("/edit/status/{orderId}")
+    @PreAuthorize("isAuthenticated()")
+    fun editOrderStatus(@RequestBody orderStatus: OrderStatusEnum, @PathVariable orderId: String, principal: Principal): Status {
+        return orderService.editOrderStatus(orderStatus, orderId)
+    }
+
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("isAuthenticated()")
     fun deleteOrder(@PathVariable id: UUID, principal: Principal): Status {
         return orderService.deleteOrder(id, principal.name)
     }
 
-    @GetMapping("/list")
+    @GetMapping("/my")
     @PreAuthorize("isAuthenticated()")
     fun getOrdersListMy(@RequestParam params: MutableMap<String, String>, principal: Principal): List<Order> {
         return orderService.getOrdersListMy(params, principal.name)

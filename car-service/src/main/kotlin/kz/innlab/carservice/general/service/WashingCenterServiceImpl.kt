@@ -48,6 +48,8 @@ class WashingCenterServiceImpl : WashingCenterService {
             it.lon = washingCenter.lon
             it.description = washingCenter.description
             it.phone = washingCenter.phone
+            it.startTime = washingCenter.startTime
+            it.endTime = washingCenter.endTime
             repository.save(it)
             status.status = 1
             status.message = String.format("Washing Center %s has been edited", it.id)

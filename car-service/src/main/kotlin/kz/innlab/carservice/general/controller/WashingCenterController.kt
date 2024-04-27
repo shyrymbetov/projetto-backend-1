@@ -18,7 +18,7 @@ class WashingCenterController {
     lateinit var washingCenterService: WashingCenterService
 
     @PostMapping("/create")
-    @PreAuthorize("hasRole('EMPLOYEE')")
+    @PreAuthorize("hasRole('EMPLOYEE') || hasRole('ADMIN')")
     fun createWashingCenter(@RequestBody washingCenter: WashingCenter, principal: Principal): Status {
         return washingCenterService.createWashingCenter(washingCenter, principal.name)
     }
@@ -53,6 +53,7 @@ class WashingCenterController {
     fun getWashingCenterById(@PathVariable id: UUID, principal: Principal): Optional<WashingCenter> {
         return washingCenterService.getWashingCenterById(id)
     }
+
 
     @PostMapping("/washing-centers-by-ids")
     @PreAuthorize("isAuthenticated()")

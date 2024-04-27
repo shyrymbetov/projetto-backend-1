@@ -2,6 +2,7 @@ package kz.innlab.carservice.car.service
 
 import kz.innlab.carservice.general.dto.Status
 import kz.innlab.carservice.general.model.CarWashPrice
+import kz.innlab.carservice.general.repository.CarBodyRepository
 import kz.innlab.carservice.general.repository.CarWashPriceRepository
 import kz.innlab.carservice.general.repository.WashingCenterRepository
 import org.slf4j.LoggerFactory
@@ -20,6 +21,9 @@ class CarWashPriceServiceImpl: CarWashPriceService {
 
     @Autowired
     lateinit var washingCenterRepository: WashingCenterRepository
+
+    @Autowired
+    lateinit var carBodyRepository: CarBodyRepository
     override fun createCarWashPrice(carWashPrice: CarWashPrice): Status {
         val status = Status()
 
@@ -32,6 +36,16 @@ class CarWashPriceServiceImpl: CarWashPriceService {
             status.value = carWashPrice.washingCenterId
             return status
         }
+
+        carBodyRepository.findByIdAndDeletedAtIsNull(carWashPrice.carBodyId!!).ifPresent { carBody ->
+            carWashPrice.carBody = carBody
+        }
+        if (carWashPrice.carBody == null) {
+            status.status = 0
+            status.message = String.format("Car Body: %s doesn't exist", carWashPrice.washingCenterId)
+            status.value = carWashPrice.carBodyId
+            return status
+        }
         repository.save(carWashPrice)
         status.status = 1
         status.message = String.format("Car Wash Box: %s has been created", carWashPrice.cost.toString() + carWashPrice.carBodyId.toString())
@@ -42,14 +56,36 @@ class CarWashPriceServiceImpl: CarWashPriceService {
 
     override fun editCarWashPrice(carWashPrice: CarWashPrice, carWashPriceId: String): Status {
         val status = Status()
+        status.status = 1
         repository.findByIdAndDeletedAtIsNull( UUID.fromString(carWashPriceId) ).ifPresentOrElse({
 
-            it.cost = carWashPrice.cost
+            washingCenterRepository.findByIdAndDeletedAtIsNull(carWashPrice.washingCenterId!!).ifPresent { washingCenter ->
+                carWashPrice.washingCenter = washingCenter
+            }
+            if (carWashPrice.washingCenter == null) {
+                status.status = 0
+                status.message = String.format("Washing Center: %s doesn't exist", carWashPrice.washingCenterId)
+                status.value = carWashPrice.washingCenterId
+            }
+            it.washingCenterId = carWashPrice.washingCenterId
+
+            carBodyRepository.findByIdAndDeletedAtIsNull(carWashPrice.carBodyId!!).ifPresent { carBody ->
+                carWashPrice.carBody = carBody
+            }
+            if (carWashPrice.carBody == null) {
+                status.status = 0
+                status.message = String.format("Car Body: %s doesn't exist", carWashPrice.washingCenterId)
+                status.value = carWashPrice.carBodyId
+            }
             it.carBodyId = carWashPrice.carBodyId
-            repository.save(it)
-            status.status = 1
-            status.message = String.format("Car Wash Price %s has been edited", it.id)
-            status.value = it.id
+            it.cost = carWashPrice.cost
+            if (status.status == 1){
+                repository.save(it)
+                status.status = 1
+                status.message = String.format("Car Wash Price %s has been edited", it.id)
+                status.value = it.id
+            }
+
         }, {
             println("service2")
             status.message = String.format("Car Wash Price does not exist")
@@ -81,6 +117,10 @@ class CarWashPriceServiceImpl: CarWashPriceService {
 
     override fun getCarWashPriceById(id: UUID): Optional<CarWashPrice> {
         return repository.findByIdAndDeletedAtIsNull(id)
+    }
+
+    override fun getCarWashPriceByCarBodyAndWashingCenter(washingCenterId: UUID, carBodyId: UUID): Optional<CarWashPrice> {
+        return repository.findByWashingCenterIdAndCarBodyId(washingCenterId, carBodyId)
     }
 
 }

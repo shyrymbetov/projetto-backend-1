@@ -13,4 +13,5 @@ interface CarWashPriceService {
     fun deleteCarWashPrice(id: UUID): Status
     fun getCarWashPriceListByCarWashingCenter(params: MutableMap<String, String>, washingCenterId: UUID): List<CarWashPrice>
     fun getCarWashPriceById(id: UUID): Optional<CarWashPrice>
+    fun getCarWashPriceByCarBodyAndWashingCenter(washingCenterId: UUID, carBodyId: UUID): Optional<CarWashPrice>
 }

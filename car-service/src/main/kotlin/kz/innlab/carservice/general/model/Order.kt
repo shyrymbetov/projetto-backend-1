@@ -1,6 +1,8 @@
 package kz.innlab.carservice.general.model
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import com.vladmihalcea.hibernate.type.array.StringArrayType
+import kz.innlab.carservice.general.dto.OrderStatusEnum
 import kz.innlab.carservice.system.model.Auditable
 import org.hibernate.annotations.TypeDef
 import org.hibernate.annotations.TypeDefs
@@ -22,7 +24,11 @@ class Order: Auditable<String?>() {
     var id: UUID? = null
 
     @Column(name = "date_time", columnDefinition = "VARCHAR(255)", nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     var dateTime: Timestamp? = null
+
+    @Enumerated(EnumType.STRING)
+    var status: OrderStatusEnum? = OrderStatusEnum.CREATED
 
     @Column(name = "car_wash_box_id", columnDefinition = "uuid", nullable = false, insertable = false, updatable = false)
     var carWashBoxId: UUID? = null

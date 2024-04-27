@@ -45,4 +45,10 @@ class CarWashPriceController {
     fun getCarWashPriceById(@PathVariable id: UUID, principal: Principal): Optional<CarWashPrice> {
         return carWashPriceService.getCarWashPriceById(id)
     }
+
+    @GetMapping("by-carbody-washingcenter/{washingCenterId}/{carBodyId}")
+    @PreAuthorize("isAuthenticated()")
+    fun getCarWashPriceByCarBodyAndWashingCenter(@PathVariable washingCenterId: UUID, @PathVariable carBodyId: UUID, principal: Principal): Optional<CarWashPrice> {
+        return carWashPriceService.getCarWashPriceByCarBodyAndWashingCenter(washingCenterId, carBodyId)
+    }
 }

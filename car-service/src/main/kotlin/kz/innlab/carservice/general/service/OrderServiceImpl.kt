@@ -1,8 +1,13 @@
 package kz.innlab.carservice.general.service
 
+import com.netflix.discovery.converters.Auto
 import kz.innlab.carservice.car.service.OrderService
+import kz.innlab.carservice.general.dto.OrderStatusEnum
 import kz.innlab.carservice.general.dto.Status
 import kz.innlab.carservice.general.model.Order
+import kz.innlab.carservice.general.repository.CarRepository
+import kz.innlab.carservice.general.repository.CarWashBoxRepository
+import kz.innlab.carservice.general.repository.CarWashPriceRepository
 import kz.innlab.carservice.general.repository.OrderRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,18 +22,53 @@ class OrderServiceImpl : OrderService {
     @Autowired
     lateinit var repository: OrderRepository
 
+    @Autowired
+    lateinit var carWashPriceRepository: CarWashPriceRepository
+
+    @Autowired
+    lateinit var carWashBoxRepository: CarWashBoxRepository
+
+    @Autowired
+    lateinit var carRepository: CarRepository
+
     //    @Autowired
     //    lateinit var fileServiceClient: FileServiceClient
 
     override fun createOrder(order: Order, userId: String): Status {
         val status = Status()
-        println(order.carWashPriceId)
-        println(order.carWashBoxId)
-        println(order.carId)
-//        order.employee = UUID.fromString(userId)
 
-//        repository.save(order)
+        carRepository.findByIdAndDeletedAtIsNull(order.carId!!).ifPresent {
+            order.car = it
+        }
+        if (order.car == null) {
+            status.status = 0
+            status.message = String.format("Car: %s doesn't exist", order.carId)
+            status.value = order.carId
+            return status
+        }
 
+        carWashBoxRepository.findByIdAndDeletedAtIsNull(order.carWashBoxId!!).ifPresent {
+            order.carWashBox = it
+        }
+        if (order.carWashBox == null) {
+            status.status = 0
+            status.message = String.format("Car Wash box: %s doesn't exist", order.carWashBoxId)
+            status.value = order.carWashPriceId
+            return status
+        }
+
+        carWashPriceRepository.findByIdAndDeletedAtIsNull(order.carWashPriceId!!).ifPresent {
+            order.carWashPrice = it
+        }
+        if (order.carWashPrice == null) {
+            status.status = 0
+            status.message = String.format("Car Wash Price: %s doesn't exist", order.carWashPriceId)
+            status.value = order.carWashPriceId
+            return status
+        }
+
+
+        repository.save(order)
         status.status = 1
         status.message = String.format("Order: %s has been created", "order.id")
         status.value = "order.id"
@@ -38,21 +78,66 @@ class OrderServiceImpl : OrderService {
 
     override fun editOrder(order: Order, orderId: String): Status {
         val status = Status()
+        status.status = 1
         repository.findByIdAndDeletedAtIsNull( UUID.fromString(orderId) ).ifPresentOrElse({
-            // TODO editOrder
-//            it.name = washingCenter.name
-//            it.location = washingCenter.location
-//            it.lat = washingCenter.lat
-//            it.lon = washingCenter.lon
-//            it.description = washingCenter.description
-//            it.phone = washingCenter.phone
-            repository.save(it)
-            status.status = 1
-            status.message = String.format("Washing Center %s has been edited", it.id)
-            status.value = it.id
+            carRepository.findByIdAndDeletedAtIsNull(order.carId!!).ifPresent { car ->
+                it.car = car
+            }
+
+            if (it.car == null) {
+                status.status = 0
+                status.message = String.format("Car: %s doesn't exist", order.carId)
+                status.value = order.carId
+            }
+            it.carId = order.carId
+
+            carWashBoxRepository.findByIdAndDeletedAtIsNull(order.carWashBoxId!!).ifPresent { box ->
+                it.carWashBox = box
+            }
+            if (it.carWashBox == null) {
+                status.status = 0
+                status.message = String.format("Car Wash box: %s doesn't exist", order.carWashBoxId)
+                status.value = order.carWashPriceId
+            }
+            it.carWashBoxId = order.carWashBoxId
+
+            carWashPriceRepository.findByIdAndDeletedAtIsNull(order.carWashPriceId!!).ifPresent { price ->
+                it.carWashPrice = price
+            }
+            if (it.carWashPrice == null) {
+                status.status = 0
+                status.message = String.format("Car Wash Price: %s doesn't exist", order.carWashPriceId)
+                status.value = order.carWashPriceId
+            }
+            it.carWashPriceId = order.carWashPriceId
+
+            it.dateTime = order.dateTime
+            it.status = order.status
+
+            if (status.status == 1){
+                repository.save(it)
+                status.status = 1
+                status.message = String.format("Washing Center %s has been edited", it.id)
+                status.value = it.id
+            }
+
         }, {
             println("service2")
             status.message = String.format("Washing Center does not exist")
+        })
+        return status
+    }
+
+    override fun editOrderStatus(orderStatus: OrderStatusEnum, orderId: String): Status {
+        val status = Status()
+        repository.findByIdAndDeletedAtIsNull( UUID.fromString(orderId) ).ifPresentOrElse({
+            it.status = orderStatus
+            repository.save(it)
+            status.status = 1
+            status.message = "Order status changed successfully!"
+        }, {
+            println("service2")
+            status.message = String.format("Order type does not exist")
         })
         return status
     }
@@ -73,8 +158,7 @@ class OrderServiceImpl : OrderService {
     }
 
     override fun getOrdersListMy(params: MutableMap<String, String>, userId: String): List<Order> {
-        TODO("Not yet implemented")
-//        return repository.findAllByEmployeeAndDeletedAtIsNull(UUID.fromString(userId))
+        return repository.findAllByDeletedAtIsNull().filter { it.car?.owner == UUID.fromString(userId) }
     }
 
     override fun getOrderById(id: UUID): Optional<Order> {
