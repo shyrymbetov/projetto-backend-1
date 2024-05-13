@@ -61,6 +61,9 @@ class WashingCenter: Auditable<String?>() {
     @OneToMany(mappedBy = "washingCenter", cascade = [CascadeType.ALL], orphanRemoval = true)
     val carWashPrice: MutableList<CarWashPrice> = mutableListOf()
 
+    @OneToMany(mappedBy = "washingCenter", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val carWashWorker: MutableList<CarWashWorker> = mutableListOf()
+
 }
 
 

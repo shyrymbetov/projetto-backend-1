@@ -1,4 +1,5 @@
-package kz.innlab.carservice.car.service
+package kz.innlab.carservice.general.service
+
 
 import kz.innlab.carservice.general.dto.Status
 import kz.innlab.carservice.general.model.Cars
@@ -31,10 +32,16 @@ class CarServiceImpl : CarService {
                 cars.carBody = it
         }
         if (cars.carBody == null) {
-            status.status = 1
-            status.message = String.format("Car: %s doesn't exist", cars.carBodyId)
+            status.status = 0
+            status.message = String.format("Car body: %s doesn't exist", cars.carBodyId)
             status.value = cars.id
             return status
+        }
+
+        repository.findByVrpAndDeletedAtIsNull(cars.vrp!!).ifPresent {
+            status.status = 0
+            status.message = String.format("VRP: %s already in use", cars.vrp)
+            status.value = cars.id
         }
         repository.save(cars)
         status.status = 1
@@ -49,15 +56,32 @@ class CarServiceImpl : CarService {
         repository.findByIdAndDeletedAtIsNull( UUID.fromString(carId) ).ifPresentOrElse({
             it.model = cars.model
             it.mark = cars.model
-             carBodyRepository.findByIdAndDeletedAtIsNull(it.carBody!!.id!!).ifPresent { carBody ->
-                 it.carBody = carBody
+            carBodyRepository.findByIdAndDeletedAtIsNull(it.carBody!!.id!!).ifPresent { carBody ->
+                it.carBody = carBody
             }
+            if (it.carBody == null){
+                it.carBodyId = cars.carBodyId
+            }
+            else {
+                status.status = 0
+                status.message = String.format("Car body: %s doesn't exist", cars.carBodyId)
+                status.value = cars.id
+            }
+
             it.color = cars.color
+            repository.findByVrpAndDeletedAtIsNull(cars.vrp!!).ifPresent {
+                status.status = 0
+                status.message = String.format("VRP: %s already in use", cars.vrp)
+                status.value = cars.id
+            }
             it.vrp = cars.vrp
-            repository.save(it)
-            status.status = 1
-            status.message = String.format("Car %s has been edited", it.id)
-            status.value = it.id
+            if (status.status == 1) {
+                repository.save(it)
+                status.status = 1
+                status.message = String.format("Car %s has been edited", it.id)
+                status.value = it.id
+            }
+
         }, {
             println("service2")
             status.message = String.format("Car does not exist")

@@ -1,17 +1,14 @@
 package kz.innlab.carservice.general.service
 
-import com.netflix.discovery.converters.Auto
-import kz.innlab.carservice.car.service.OrderService
+
 import kz.innlab.carservice.general.dto.OrderStatusEnum
 import kz.innlab.carservice.general.dto.Status
 import kz.innlab.carservice.general.model.Order
-import kz.innlab.carservice.general.repository.CarRepository
-import kz.innlab.carservice.general.repository.CarWashBoxRepository
-import kz.innlab.carservice.general.repository.CarWashPriceRepository
-import kz.innlab.carservice.general.repository.OrderRepository
+import kz.innlab.carservice.general.repository.*
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.sql.Date
 import java.sql.Timestamp
 import java.util.*
 
@@ -27,6 +24,9 @@ class OrderServiceImpl : OrderService {
 
     @Autowired
     lateinit var carWashBoxRepository: CarWashBoxRepository
+
+    @Autowired
+    lateinit var carWashWorkerRepository: CarWashWorkerRepository
 
     @Autowired
     lateinit var carRepository: CarRepository
@@ -53,6 +53,16 @@ class OrderServiceImpl : OrderService {
         if (order.carWashBox == null) {
             status.status = 0
             status.message = String.format("Car Wash box: %s doesn't exist", order.carWashBoxId)
+            status.value = order.carWashPriceId
+            return status
+        }
+
+        carWashWorkerRepository.findByIdAndDeletedAtIsNull(order.carWashWorkerId!!).ifPresent {
+            order.carWashWorker = it
+        }
+        if (order.carWashBox == null) {
+            status.status = 0
+            status.message = String.format("Car Wash Worker: %s doesn't exist", order.carWashWorkerId)
             status.value = order.carWashPriceId
             return status
         }
@@ -111,6 +121,16 @@ class OrderServiceImpl : OrderService {
             }
             it.carWashPriceId = order.carWashPriceId
 
+            carWashWorkerRepository.findByIdAndDeletedAtIsNull(order.carWashPriceId!!).ifPresent { worker ->
+                it.carWashWorker = worker
+            }
+            if (it.carWashWorker == null) {
+                status.status = 0
+                status.message = String.format("Car Wash Worker: %s doesn't exist", order.carWashPriceId)
+                status.value = order.carWashPriceId
+            }
+            it.carWashWorkerId = order.carWashWorkerId
+
             it.dateTime = order.dateTime
             it.status = order.status
 
@@ -163,6 +183,10 @@ class OrderServiceImpl : OrderService {
 
     override fun getOrderById(id: UUID): Optional<Order> {
         return repository.findByIdAndDeletedAtIsNull(id)
+    }
+
+    override fun getOrderByDateAndCarWashBoxId(carWashBoxId: String, date: Date): List<Order> {
+        return repository.findByCarWashBoxIdAndDate(UUID.fromString(carWashBoxId), date.toLocalDate())
     }
 
 

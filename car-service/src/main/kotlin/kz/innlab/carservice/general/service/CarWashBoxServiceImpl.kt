@@ -1,4 +1,4 @@
-package kz.innlab.carservice.car.service
+package kz.innlab.carservice.general.service
 
 import kz.innlab.carservice.general.dto.Status
 import kz.innlab.carservice.general.model.CarWashBox

@@ -1,6 +1,6 @@
 package kz.innlab.carservice.general.controller
 
-import kz.innlab.carservice.car.service.CarWashBoxService
+import kz.innlab.carservice.general.service.CarWashBoxService
 import kz.innlab.carservice.general.model.CarWashBox
 import kz.innlab.carservice.general.dto.Status
 import org.springframework.beans.factory.annotation.Autowired

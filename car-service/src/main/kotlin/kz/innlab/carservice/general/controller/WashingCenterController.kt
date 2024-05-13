@@ -2,9 +2,9 @@ package kz.innlab.carservice.general.controller
 
 
 import kz.innlab.carservice.general.model.WashingCenter
-import kz.innlab.carservice.car.service.WashingCenterService
 import kz.innlab.carservice.general.dto.Status
 import kz.innlab.carservice.general.model.UserWashingCenter
+import kz.innlab.carservice.general.service.WashingCenterService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*

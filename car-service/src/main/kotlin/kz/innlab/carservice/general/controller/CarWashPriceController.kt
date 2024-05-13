@@ -1,9 +1,9 @@
 package kz.innlab.carservice.general.controller
 
-import kz.innlab.carservice.car.service.CarWashPriceService
-import kz.innlab.carservice.general.model.CarWashBox
+
 import kz.innlab.carservice.general.dto.Status
 import kz.innlab.carservice.general.model.CarWashPrice
+import kz.innlab.carservice.general.service.CarWashPriceService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*

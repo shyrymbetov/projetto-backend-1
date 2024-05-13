@@ -48,4 +48,17 @@ class Order: Auditable<String?>() {
     @ManyToOne(fetch = FetchType.LAZY) // or FetchType.EAGER depending on your needs
     var car: Cars? = null
 
+    @Column(name = "car_wash_worker", columnDefinition = "uuid", nullable = false, insertable = false, updatable = false)
+    var carWashWorkerId: UUID? = null
+
+    @ManyToOne(fetch = FetchType.LAZY) // or FetchType.EAGER depending on your needs
+    var carWashWorker: CarWashWorker? = null
+
+    val washingCenter: String?
+        get() {
+            // Check if carWashBox is not null and has washingCenter initialized
+            return carWashBox?.washingCenter?.name
+        }
+
+
 }
