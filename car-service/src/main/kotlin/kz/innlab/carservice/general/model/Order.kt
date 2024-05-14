@@ -48,7 +48,7 @@ class Order: Auditable<String?>() {
     @ManyToOne(fetch = FetchType.LAZY) // or FetchType.EAGER depending on your needs
     var car: Cars? = null
 
-    @Column(name = "car_wash_worker", columnDefinition = "uuid", nullable = false, insertable = false, updatable = false)
+    @Column(name = "car_wash_worker", columnDefinition = "uuid", nullable = true)
     var carWashWorkerId: UUID? = null
 
     @ManyToOne(fetch = FetchType.LAZY) // or FetchType.EAGER depending on your needs
