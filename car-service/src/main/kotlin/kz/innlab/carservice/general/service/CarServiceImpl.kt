@@ -52,17 +52,16 @@ class CarServiceImpl : CarService {
     }
 
     override fun editCar(cars: Cars, carId: String): Status {
-        val status = Status()
+        var status = Status()
+        status.status = 1
         repository.findByIdAndDeletedAtIsNull( UUID.fromString(carId) ).ifPresentOrElse({
             it.model = cars.model
-            it.mark = cars.model
-            carBodyRepository.findByIdAndDeletedAtIsNull(it.carBody!!.id!!).ifPresent { carBody ->
+            it.mark = cars.mark
+            carBodyRepository.findByIdAndDeletedAtIsNull(it.carBodyId!!).ifPresent { carBody ->
                 it.carBody = carBody
             }
-            if (it.carBody == null){
-                it.carBodyId = cars.carBodyId
-            }
-            else {
+
+            if (it.carBody == null) {
                 status.status = 0
                 status.message = String.format("Car body: %s doesn't exist", cars.carBodyId)
                 status.value = cars.id
@@ -70,9 +69,11 @@ class CarServiceImpl : CarService {
 
             it.color = cars.color
             repository.findByVrpAndDeletedAtIsNull(cars.vrp!!).ifPresent {
-                status.status = 0
-                status.message = String.format("VRP: %s already in use", cars.vrp)
-                status.value = cars.id
+                if (it.vrp != cars.vrp) {
+                    status.status = 0
+                    status.message = String.format("VRP: %s already in use", cars.vrp)
+                    status.value = cars.id
+                }
             }
             it.vrp = cars.vrp
             if (status.status == 1) {
