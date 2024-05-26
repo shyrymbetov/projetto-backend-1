@@ -8,7 +8,6 @@ import java.util.*
 
 interface CarFixRepository: JpaRepository<CarFix, UUID>, JpaSpecificationExecutor<CarFix> {
     fun findByIdAndDeletedAtIsNull(id: UUID): Optional<CarFix>
-    fun findByTypeAndDeletedAtIsNull(type: String): Optional<CarFix>
     fun findAllByIdInAndDeletedAtIsNull(bookIds: List<UUID>): List<CarFix>
     fun findAllByDeletedAtIsNull(): List<CarFix>
     fun findByWashingCenterIdAndDeletedAtIsNull(washingCenterId: UUID): List<CarFix>

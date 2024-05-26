@@ -21,22 +21,11 @@ class CarFix: Auditable<String?>() {
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: UUID? = null
 
-    @Column(name = "type", columnDefinition = "character varying", nullable = false, unique = true)
-    var type: String? = null
-
     @Column(name = "ru_name", columnDefinition = "character varying")
     var ruName: String? = null
 
     @Column()
     var cost: Int? = null
-
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "car_fix_box")
-//    @JsonIgnore()
-//    var carFixBox: CarFixBox? = null
-//
-//    @Column(name = "car_fix_box", insertable = false, updatable = false, nullable = false)
-//    var carFixBoxId: UUID? = null
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "washing_center_id") // Specify the foreign key column

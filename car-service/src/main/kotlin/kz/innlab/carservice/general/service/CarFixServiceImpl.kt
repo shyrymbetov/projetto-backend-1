@@ -44,9 +44,9 @@ class CarFixServiceImpl : CarFixService {
         }
 
         status.status = 1
-        status.message = String.format("Car Fix: %s has been created", carFix.type)
-        status.value = carFix.type
-        log.info(String.format("Car Fix: %s has been created", carFix.type))
+        status.message = String.format("Car Fix: %s has been created", carFix.ruName)
+        status.value = carFix.ruName
+        log.info(String.format("Car Fix: %s has been created", carFix.ruName))
         repository.save(carFix)
         return status
     }
@@ -54,7 +54,6 @@ class CarFixServiceImpl : CarFixService {
     override fun editCarFix(carFix: CarFix, carFixId: String): Status {
         val status = Status()
         repository.findByIdAndDeletedAtIsNull( UUID.fromString(carFixId) ).ifPresentOrElse({
-            it.type = carFix.type
             it.ruName = carFix.ruName
             it.cost = it.cost
             repository.save(it)
