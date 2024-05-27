@@ -3,6 +3,7 @@ package kz.innlab.carservice.general.model
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.vladmihalcea.hibernate.type.array.StringArrayType
 import kz.innlab.carservice.system.model.Auditable
+import org.hibernate.annotations.Type
 import org.hibernate.annotations.TypeDef
 import org.hibernate.annotations.TypeDefs
 import java.sql.Time
@@ -51,6 +52,10 @@ class WashingCenter: Auditable<String?>() {
 
     @Column(name = "EMPLOYEE", nullable = false)
     var employee: UUID? = null
+
+    @Type(type = "uuid-array")
+    @Column(name = "PHOTO", columnDefinition="uuid[]")
+    var headings: Array<UUID> = arrayOf()
 
     @Column(name = "DESCRIPTION", columnDefinition = "character varying", nullable = true)
     var description: String? = null

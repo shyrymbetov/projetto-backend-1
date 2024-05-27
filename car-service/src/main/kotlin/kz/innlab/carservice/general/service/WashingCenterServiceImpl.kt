@@ -50,6 +50,7 @@ class WashingCenterServiceImpl : WashingCenterService {
             it.phone = washingCenter.phone
             it.startTime = washingCenter.startTime
             it.endTime = washingCenter.endTime
+            it.headings = washingCenter.headings
             repository.save(it)
             status.status = 1
             status.message = String.format("Washing Center %s has been edited", it.id)
@@ -97,8 +98,9 @@ class WashingCenterServiceImpl : WashingCenterService {
         return result
     }
 
-    override fun getMyFavoriteWashingCenter(userId: String): List<UserWashingCenter> {
-        return userWashingCenterRepository.findAllByUserId(UUID.fromString(userId))
+    override fun getMyFavoriteWashingCenter(userId: String): List<WashingCenter> {
+        val ids = userWashingCenterRepository.findAllByUserId(UUID.fromString(userId)).map { it.washingCenterId!! }
+        return repository.findAllByIdInAndDeletedAtIsNull(ids)
     }
 
     override fun addFavoriteWashingCenter(id: UUID, userId: String): Status {

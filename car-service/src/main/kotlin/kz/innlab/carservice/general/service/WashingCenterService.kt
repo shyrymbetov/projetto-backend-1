@@ -13,7 +13,7 @@ interface WashingCenterService {
     fun getWashingCentersList(params: MutableMap<String, String>): List<WashingCenter>
     fun getWashingCenterById(id: UUID): Optional<WashingCenter>
     fun getListWashingCentersByIds(ids: List<UUID>): List<WashingCenter>
-    fun getMyFavoriteWashingCenter(userId: String): List<UserWashingCenter>
+    fun getMyFavoriteWashingCenter(userId: String): List<WashingCenter>
     fun addFavoriteWashingCenter(id: UUID, userId: String): Status
     fun unFavoriteWashingCenter(id: UUID): Status
 }

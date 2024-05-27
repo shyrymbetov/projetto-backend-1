@@ -63,7 +63,7 @@ class WashingCenterController {
 
     @GetMapping("/favorite")
     @PreAuthorize("isAuthenticated()")
-    fun getMyFavoriteWashingCenter(principal: Principal): List<UserWashingCenter> {
+    fun getMyFavoriteWashingCenter(principal: Principal): List<WashingCenter> {
         return washingCenterService.getMyFavoriteWashingCenter(principal.name)
     }
 
