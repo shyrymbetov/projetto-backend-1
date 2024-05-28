@@ -60,5 +60,10 @@ class FixOrder: Auditable<String?>() {
             return carFixBox?.washingCenter?.name
         }
 
+    val expired: Boolean
+        get() {
+            return dateTime?.before(Date(System.currentTimeMillis())) ?: false
+        }
+
 
 }

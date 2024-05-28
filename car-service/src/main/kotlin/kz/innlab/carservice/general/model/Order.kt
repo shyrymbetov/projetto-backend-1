@@ -9,6 +9,7 @@ import org.hibernate.annotations.TypeDefs
 import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
+import kotlin.jvm.Transient
 
 @Entity
 @Table(name = "car_wash_order")
@@ -60,5 +61,9 @@ class Order: Auditable<String?>() {
             return carWashBox?.washingCenter?.name
         }
 
+    val expired: Boolean
+        get() {
+            return dateTime?.before(Date(System.currentTimeMillis())) ?: false
+        }
 
 }
