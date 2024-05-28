@@ -57,6 +57,7 @@ class OrderController {
     fun getOrderById(@PathVariable id: UUID, principal: Principal): Optional<Order> {
         return orderService.getOrderById(id)
     }
+
     @PostMapping("/by-date-and-box/{carWashBoxId}")
     @PreAuthorize("isAuthenticated()")
     fun getOrderByDateAndCarWashBoxId(
@@ -74,6 +75,21 @@ class OrderController {
             System.out.println("Error parsing date: " + e.message)
             return emptyList()
         }
+
+    }
+
+    @PostMapping("/by-date-and-center/{carWashBoxId}")
+    @PreAuthorize("isAuthenticated()")
+    fun getOrderByDateAndWashingCenterId(
+        @RequestBody(required = true) date: String,
+        principal: Principal, @PathVariable carWashBoxId: String
+    ): Any {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+        val utilDate = dateFormat.parse(date)
+
+        val sqlDate = Date(utilDate.time)
+
+        return orderService.getOrderByDateAndWashingCenterId(carWashBoxId, sqlDate)
 
     }
 }

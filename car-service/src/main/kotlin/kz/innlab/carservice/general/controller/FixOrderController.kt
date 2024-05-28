@@ -76,4 +76,19 @@ class FixOrderController {
         }
 
     }
+
+    @PostMapping("/by-date-and-center/{carWashBoxId}")
+    @PreAuthorize("isAuthenticated()")
+    fun getOrderByDateAndWashingCenterId(
+        @RequestBody(required = true) date: String,
+        principal: Principal, @PathVariable carWashBoxId: String
+    ): Any {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+        val utilDate = dateFormat.parse(date)
+
+        val sqlDate = Date(utilDate.time)
+
+        return fixOrderService.getOrderByDateAndWashingCenterId(carWashBoxId, sqlDate)
+
+    }
 }

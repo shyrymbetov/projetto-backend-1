@@ -17,4 +17,5 @@ interface FixOrderService {
     fun getOrdersListMy(params: MutableMap<String, String>, userId: String): List<FixOrder>
     fun getOrderById(id: UUID): Optional<FixOrder>
     fun getOrderByDateAndCarWashBoxId(carWashBoxId: String, date: Date): List<FixOrder>
+    fun getOrderByDateAndWashingCenterId(washingCenterId: String, date: Date): Any
 }

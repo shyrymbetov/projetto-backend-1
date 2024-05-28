@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service
 import java.sql.Date
 import java.sql.Timestamp
 import java.util.*
+import kotlin.collections.ArrayList
 
 @Service
 class OrderServiceImpl : OrderService {
@@ -30,6 +31,9 @@ class OrderServiceImpl : OrderService {
 
     @Autowired
     lateinit var carRepository: CarRepository
+
+    @Autowired
+    private lateinit var washingCenterRepository: WashingCenterRepository
 
     //    @Autowired
     //    lateinit var fileServiceClient: FileServiceClient
@@ -187,6 +191,26 @@ class OrderServiceImpl : OrderService {
 
     override fun getOrderByDateAndCarWashBoxId(carWashBoxId: String, date: Date): List<Order> {
         return repository.findByCarWashBoxIdAndDate(UUID.fromString(carWashBoxId), date.toLocalDate())
+    }
+
+    override fun getOrderByDateAndWashingCenterId(washingCenterId: String, date: Date): Any {
+        val listOfBoxIds = carWashBoxRepository.findAllByWashingCenterId(UUID.fromString(washingCenterId)).map { it.id!! }
+        val map = mutableMapOf<String, List<Order>>() // Assuming Order is the type of elements in ordersByBox
+
+        for (item: UUID in listOfBoxIds) {
+            val ordersByBox = repository.findByCarWashBoxIdAndDate(item, date.toLocalDate())
+            if (ordersByBox.isNotEmpty()) {
+                val boxName = ordersByBox[0].carWashBox!!.name!!
+                map[boxName] = ordersByBox
+            }
+        }
+
+        val list: ArrayList<Map<String, List<Order>>> = ArrayList()
+        map.forEach { (key, value) ->
+            list.add(mapOf(key to value))
+        }
+
+        return map
     }
 
 

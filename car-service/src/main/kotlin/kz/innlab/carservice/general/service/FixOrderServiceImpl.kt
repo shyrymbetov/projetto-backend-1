@@ -177,5 +177,25 @@ class FixOrderServiceImpl : FixOrderService {
         return repository.findByCarFixBoxIdAndDate(UUID.fromString(carWashBoxId), date.toLocalDate())
     }
 
+    override fun getOrderByDateAndWashingCenterId(washingCenterId: String, date: Date): Any {
+        val listOfBoxIds = carFixBoxRepository.findAllByWashingCenterId(UUID.fromString(washingCenterId)).map { it.id!! }
+        val map = mutableMapOf<String, List<FixOrder>>() // Assuming Order is the type of elements in ordersByBox
+
+        for (item: UUID in listOfBoxIds) {
+            val ordersByBox = repository.findByCarFixBoxIdAndDate(item, date.toLocalDate())
+            if (ordersByBox.isNotEmpty()) {
+                val boxName = ordersByBox[0].carFixBox!!.name!!
+                map[boxName] = ordersByBox
+            }
+        }
+
+        val list: ArrayList<Map<String, List<FixOrder>>> = ArrayList()
+        map.forEach { (key, value) ->
+            list.add(mapOf(key to value))
+        }
+
+        return map
+    }
+
 
 }
