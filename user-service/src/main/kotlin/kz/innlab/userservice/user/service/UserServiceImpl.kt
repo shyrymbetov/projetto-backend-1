@@ -150,6 +150,9 @@ class UserServiceImpl : UserService {
             newUser.roles = user.roles
             newUser.enabled = false
             newUser.phone = user.phone ?: "87051231234"
+            if (user.roles.contains("ADMIN")) {
+                newUser.enabled = true
+            }
 
             status.status = 1
             status.message = "Success"

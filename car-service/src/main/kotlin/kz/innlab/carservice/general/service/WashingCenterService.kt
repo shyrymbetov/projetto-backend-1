@@ -15,5 +15,5 @@ interface WashingCenterService {
     fun getListWashingCentersByIds(ids: List<UUID>): List<WashingCenter>
     fun getMyFavoriteWashingCenter(userId: String): List<WashingCenter>
     fun addFavoriteWashingCenter(id: UUID, userId: String): Status
-    fun unFavoriteWashingCenter(id: UUID): Status
+    fun unFavoriteWashingCenter(userId: UUID, washingCenterId: UUID): Status
 }

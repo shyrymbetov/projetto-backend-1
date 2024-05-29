@@ -76,6 +76,6 @@ class WashingCenterController {
     @DeleteMapping("/unfavorite/{id}")
     @PreAuthorize("isAuthenticated()")
     fun unFavoriteWashingCenter( @PathVariable id: String, principal: Principal): Status {
-        return washingCenterService.unFavoriteWashingCenter(UUID.fromString(id))
+        return washingCenterService.unFavoriteWashingCenter(UUID.fromString(principal.name), UUID.fromString(id))
     }
 }

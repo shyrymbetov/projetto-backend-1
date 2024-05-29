@@ -59,7 +59,7 @@ class UserController {
     }
 
     @PutMapping("")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     fun editUser(
         @Valid @RequestBody user: UserRequest
     ): Status {

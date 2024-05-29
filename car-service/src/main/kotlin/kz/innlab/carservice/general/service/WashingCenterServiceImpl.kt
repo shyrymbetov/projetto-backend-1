@@ -112,9 +112,13 @@ class WashingCenterServiceImpl : WashingCenterService {
         return Status(1, "Successfully added to favorite")
     }
 
-    override fun unFavoriteWashingCenter(id: UUID): Status {
-        userWashingCenterRepository.deleteById(id)
-        return Status(1, "Successfully deleted from favorite")
+    override fun unFavoriteWashingCenter(userId: UUID, washingCenterId: UUID): Status {
+        var status = Status(0, "No favorite with this washingCenterId: %s", washingCenterId)
+        userWashingCenterRepository.findByUserIdAndWashingCenterId(userId, washingCenterId).ifPresent {
+            userWashingCenterRepository.deleteById(it.id!!)
+            status = Status(1, "Successfully deleted from favorite")
+        }
+        return status
     }
 
 

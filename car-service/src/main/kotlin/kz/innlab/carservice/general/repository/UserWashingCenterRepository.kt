@@ -7,4 +7,5 @@ import java.util.*
 
 interface UserWashingCenterRepository: JpaRepository<UserWashingCenter, UUID>, JpaSpecificationExecutor<UserWashingCenter> {
     fun findAllByUserId(id: UUID): List<UserWashingCenter>
+    fun findByUserIdAndWashingCenterId(userId: UUID, washingCenterId: UUID): Optional<UserWashingCenter>
 }
