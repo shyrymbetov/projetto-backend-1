@@ -175,6 +175,7 @@ class UserServiceImpl : UserService {
         var status = Status(0, "Failure")
         repository.findById(id).ifPresent {
             it.avatar = avatarId
+            repository.save(it)
             status = Status(1, "Success")
         }
         return status

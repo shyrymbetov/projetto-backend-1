@@ -154,6 +154,7 @@ class WashingCenterServiceImpl : WashingCenterService {
         var status = Status(0, "Failure")
         repository.findById(id).ifPresent {
             it.headings = headingIds.toTypedArray()
+            repository.save(it)
             status = Status(1, "Success")
         }
         return status
