@@ -10,6 +10,7 @@ import java.sql.Time
 import java.sql.Timestamp
 import java.util.*
 import javax.persistence.*
+import kotlin.jvm.Transient
 
 @Entity
 @Table(name = "car_washing_center")
@@ -75,6 +76,20 @@ class WashingCenter: Auditable<String?>() {
     @OneToMany(mappedBy = "washingCenter", cascade = [CascadeType.ALL], orphanRemoval = true)
     val carFixes: MutableList<CarFix> = mutableListOf()
 
+    @OneToMany(mappedBy = "washingCenter", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val review: MutableList<UserWashingCenterReview> = mutableListOf()
+
+    val averageRating: Float
+        get() {
+            var rating = 0.0
+            var count = 0
+            review.map {
+                rating += it.rating!!
+                count += 1
+            }
+
+            return rating.toFloat() / count
+        }
 }
 
 

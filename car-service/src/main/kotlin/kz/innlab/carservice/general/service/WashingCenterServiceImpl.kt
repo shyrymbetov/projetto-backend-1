@@ -132,6 +132,10 @@ class WashingCenterServiceImpl : WashingCenterService {
         review.userId = userId
         review.washingCenterId = washingCenterId
 
+        repository.findById(washingCenterId).ifPresent {
+            review.washingCenter = it
+        }
+
         userWashingCenterReviewRepository.save(review)
 
         status.status = 1
@@ -142,7 +146,7 @@ class WashingCenterServiceImpl : WashingCenterService {
     }
 
     override fun deleteReviewWashingCenter(id: UUID): Status {
-        userWashingCenterRepository.deleteById(id)
+        userWashingCenterReviewRepository.deleteById(id)
         return Status(1, "Successfully deleted from Review")
     }
 
