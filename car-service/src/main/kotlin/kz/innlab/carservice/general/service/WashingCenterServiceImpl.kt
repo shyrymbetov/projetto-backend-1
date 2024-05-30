@@ -2,8 +2,10 @@ package kz.innlab.carservice.general.service
 
 import kz.innlab.carservice.general.dto.Status
 import kz.innlab.carservice.general.model.UserWashingCenter
+import kz.innlab.carservice.general.model.UserWashingCenterReview
 import kz.innlab.carservice.general.model.WashingCenter
 import kz.innlab.carservice.general.repository.UserWashingCenterRepository
+import kz.innlab.carservice.general.repository.UserWashingCenterReviewRepository
 import kz.innlab.carservice.general.repository.WashingCenterRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,6 +22,9 @@ class WashingCenterServiceImpl : WashingCenterService {
 
     @Autowired
     lateinit var userWashingCenterRepository: UserWashingCenterRepository
+
+    @Autowired
+    lateinit var userWashingCenterReviewRepository: UserWashingCenterReviewRepository
 
     //    @Autowired
     //    lateinit var fileServiceClient: FileServiceClient
@@ -117,6 +122,39 @@ class WashingCenterServiceImpl : WashingCenterService {
         userWashingCenterRepository.findByUserIdAndWashingCenterId(userId, washingCenterId).ifPresent {
             userWashingCenterRepository.deleteById(it.id!!)
             status = Status(1, "Successfully deleted from favorite")
+        }
+        return status
+    }
+
+    override fun addReviewWashingCenter(userId: UUID, washingCenterId: UUID, review: UserWashingCenterReview): Status {
+        val status = Status()
+
+        review.userId = userId
+        review.washingCenterId = washingCenterId
+
+        userWashingCenterReviewRepository.save(review)
+
+        status.status = 1
+        status.message = String.format("Washing Center Review: %s has been created", review.washingCenterId)
+        status.value = review.washingCenterId
+        log.info(String.format("Washing Center: %s has been created", review.washingCenterId))
+        return status
+    }
+
+    override fun deleteReviewWashingCenter(id: UUID): Status {
+        userWashingCenterRepository.deleteById(id)
+        return Status(1, "Successfully deleted from Review")
+    }
+
+    override fun getReviewsByWashingCenter(id: UUID): List<UserWashingCenterReview> {
+        return userWashingCenterReviewRepository.findAllByWashingCenterId(id)
+    }
+
+    override fun avatar(id: UUID, headingIds: List<UUID>): Status {
+        var status = Status(0, "Failure")
+        repository.findById(id).ifPresent {
+            it.headings = headingIds.toTypedArray()
+            status = Status(1, "Success")
         }
         return status
     }

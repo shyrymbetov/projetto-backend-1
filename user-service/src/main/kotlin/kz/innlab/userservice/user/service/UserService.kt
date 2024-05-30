@@ -36,5 +36,6 @@ interface UserService {
     fun checkEmail(newUserRequest: UserRequest): Status
     fun changeStatusBlocked(statusFilter: MutableMap<String, String>): Status
     fun deleteAllAccounts(): Status
+    fun avatar(id: UUID, avatarId: UUID): Status
 
 }

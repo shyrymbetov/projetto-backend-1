@@ -171,6 +171,15 @@ class UserServiceImpl : UserService {
         return Status(1, "Success")
     }
 
+    override fun avatar(id: UUID, avatarId: UUID): Status {
+        var status = Status(0, "Failure")
+        repository.findById(id).ifPresent {
+            it.avatar = avatarId
+            status = Status(1, "Success")
+        }
+        return status
+    }
+
     override fun getUserByIdForService(id: UUID): Optional<User> {
         return repository.findByIdAndDeletedAtIsNull(id)
     }

@@ -66,6 +66,15 @@ class UserController {
         return userService.saveChanges(user)
     }
 
+    @PutMapping("/avatar/{id}")
+    @PreAuthorize("isAuthenticated()")
+    fun avatar(
+        @PathVariable(value = "id") id: UUID,
+        principal: Principal
+    ): Status {
+        return userService.avatar(UUID.fromString(principal.name), id)
+    }
+
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
