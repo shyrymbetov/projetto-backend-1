@@ -1,6 +1,7 @@
 package kz.innlab.carservice.general.controller
 
 
+import kz.innlab.carservice.general.dto.OrderStatus
 import kz.innlab.carservice.general.dto.OrderStatusEnum
 import kz.innlab.carservice.general.dto.Status
 import kz.innlab.carservice.general.model.FixOrder
@@ -34,10 +35,10 @@ class FixOrderController {
         return fixOrderService.editOrder(fixOrder, orderId)
     }
 
-    @PutMapping("/edit/status/{fixOrderId}")
+    @PutMapping("/edit/status/{orderId}")
     @PreAuthorize("isAuthenticated()")
-    fun editOrderStatus(@RequestBody orderStatus: OrderStatusEnum, @PathVariable fixOrderId: String, principal: Principal): Status {
-        return fixOrderService.editOrderStatus(orderStatus, fixOrderId)
+    fun editOrderStatus(@RequestBody orderStatus: OrderStatus, @PathVariable orderId: String, principal: Principal): Status {
+        return fixOrderService.editOrderStatus(orderStatus, orderId)
     }
 
     @DeleteMapping("/delete/{id}")

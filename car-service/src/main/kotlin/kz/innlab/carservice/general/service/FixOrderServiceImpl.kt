@@ -1,6 +1,7 @@
 package kz.innlab.carservice.general.service
 
 
+import kz.innlab.carservice.general.dto.OrderStatus
 import kz.innlab.carservice.general.dto.OrderStatusEnum
 import kz.innlab.carservice.general.dto.Status
 import kz.innlab.carservice.general.model.FixOrder
@@ -136,10 +137,10 @@ class FixOrderServiceImpl : FixOrderService {
         return status
     }
 
-    override fun editOrderStatus(orderStatus: OrderStatusEnum, orderId: String): Status {
+    override fun editOrderStatus(orderStatus: OrderStatus, orderId: String): Status {
         val status = Status()
         repository.findByIdAndDeletedAtIsNull( UUID.fromString(orderId) ).ifPresentOrElse({
-            it.status = orderStatus
+            it.status = orderStatus.status
             repository.save(it)
             status.status = 1
             status.message = "Order status changed successfully!"

@@ -1,6 +1,7 @@
 package kz.innlab.carservice.general.controller
 
 
+import kz.innlab.carservice.general.dto.OrderStatus
 import kz.innlab.carservice.general.dto.OrderStatusEnum
 import kz.innlab.carservice.general.dto.Status
 import kz.innlab.carservice.general.model.Order
@@ -36,7 +37,7 @@ class OrderController {
 
     @PutMapping("/edit/status/{orderId}")
     @PreAuthorize("isAuthenticated()")
-    fun editOrderStatus(@RequestBody orderStatus: OrderStatusEnum, @PathVariable orderId: String, principal: Principal): Status {
+    fun editOrderStatus(@RequestBody orderStatus: OrderStatus, @PathVariable orderId: String, principal: Principal): Status {
         return orderService.editOrderStatus(orderStatus, orderId)
     }
 

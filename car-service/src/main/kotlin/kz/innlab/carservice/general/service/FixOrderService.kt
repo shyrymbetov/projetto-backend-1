@@ -1,5 +1,6 @@
 package kz.innlab.carservice.general.service
 
+import kz.innlab.carservice.general.dto.OrderStatus
 import kz.innlab.carservice.general.dto.OrderStatusEnum
 import kz.innlab.carservice.general.dto.Status
 import kz.innlab.carservice.general.model.CarBody
@@ -12,7 +13,7 @@ import java.util.*
 interface FixOrderService {
     fun createOrder(order: FixOrder, userId: String): Status
     fun editOrder(order: FixOrder, orderId: String): Status
-    fun editOrderStatus(orderStatus: OrderStatusEnum, orderId: String): Status
+    fun editOrderStatus(orderStatus: OrderStatus, orderId: String): Status
     fun deleteOrder(id: UUID, userId: String): Status
     fun getOrdersListMy(params: MutableMap<String, String>, userId: String): List<FixOrder>
     fun getOrderById(id: UUID): Optional<FixOrder>
