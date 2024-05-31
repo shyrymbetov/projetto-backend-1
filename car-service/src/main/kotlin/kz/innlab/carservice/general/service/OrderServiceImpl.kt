@@ -157,7 +157,7 @@ class OrderServiceImpl : OrderService {
         val status = Status()
         orderStatus.status
         repository.findByIdAndDeletedAtIsNull( UUID.fromString(orderId) ).ifPresentOrElse({
-            it.status = orderStatus.status
+            it.status = OrderStatusEnum.valueOf(orderStatus.status)
             repository.save(it)
             status.status = 1
             status.message = "Order status changed successfully!"

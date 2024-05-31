@@ -140,7 +140,7 @@ class FixOrderServiceImpl : FixOrderService {
     override fun editOrderStatus(orderStatus: OrderStatus, orderId: String): Status {
         val status = Status()
         repository.findByIdAndDeletedAtIsNull( UUID.fromString(orderId) ).ifPresentOrElse({
-            it.status = orderStatus.status
+            it.status = OrderStatusEnum.valueOf(orderStatus.status)
             repository.save(it)
             status.status = 1
             status.message = "Order status changed successfully!"
