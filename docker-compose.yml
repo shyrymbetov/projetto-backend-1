@@ -16,69 +16,36 @@ services:
       - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
       - PGDATA=/var/lib/postgresql/data/pgdata
     networks:
-      - softbooks-net
+      - easywash-net
     logging:
       driver: json-file
       options:
         max-size: "10m"
         max-file: "10"
 
-  nginx:
-    image: abevoelker/docker-nginx-alpine-brotli
-    container_name: nginx
-    volumes:
-      - ./data/nginx/config/nginx_brotli.conf:/etc/nginx/nginx.conf:ro
-      - ./data/nginx/conf.d:/etc/nginx/conf.d
-      - ./data/public/angular:/var/www/angular
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-      - ./data/logs/nginx:/var/log/nginx
-    restart: always
-    networks:
-      - softbooks-net
-    ports:
-      - "80:80"
-      - "443:443"
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
-
-  certbot:
-    image: certbot/certbot:latest
-    container_name: certbot
-    restart: always
-    networks:
-      - softbooks-net
-    volumes:
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-    links:
-      - nginx
-
   config:
+    image: shyrymbetov/diplom-config
     container_name: config
-    build: ./config
     environment:
       - CONFIG_SERVICE_PASSWORD=$CONFIG_SERVICE_PASSWORD
-    image: innlabkz/softbooks-config
+      - GITHUB_URL=$GITHUB_URL
+      - GITHUB_USERNAME=$GITHUB_USERNAME
+      - GITHUB_PASSWORD=$GITHUB_PASSWORD
     restart: always
-    networks:
-      - softbooks-net
-    ports:
-      - "8888:8888"
     logging:
+      driver: json-file
       options:
         max-size: "10m"
         max-file: "10"
 
   discovery:
     container_name: discovery
-    build: ./discovery
     environment:
       - CONFIG_SERVICE_PASSWORD=$CONFIG_SERVICE_PASSWORD
     image: innlabkz/softbooks-discovery
     restart: always
     networks:
-      - softbooks-net
+      - easywash-net
     depends_on:
       - config
     links:
@@ -103,7 +70,7 @@ services:
     depends_on:
       - config
     networks:
-      - softbooks-net
+      - easywash-net
     logging:
       driver: json-file
       options:
@@ -123,7 +90,7 @@ services:
       - POSTGRES_SERVER=$POSTGRES_SERVER
       - FILE_PATH=$FILE_PATH
     networks:
-      - softbooks-net
+      - easywash-net
     restart: always
     depends_on:
       - config
@@ -146,7 +113,7 @@ services:
       - POSTGRES_DB=$POSTGRES_DB
       - POSTGRES_SERVER=$POSTGRES_SERVER
     networks:
-      - softbooks-net
+      - easywash-net
     restart: always
     depends_on:
       - config
@@ -167,7 +134,7 @@ services:
       - POSTGRES_SERVER=$POSTGRES_SERVER
       - FILE_PATH=$FILE_PATH
     networks:
-      - softbooks-net
+      - easywash-net
     restart: always
     depends_on:
       - config
@@ -187,7 +154,7 @@ services:
       - POSTGRES_DB=$POSTGRES_DB
       - POSTGRES_SERVER=$POSTGRES_SERVER
     networks:
-      - softbooks-net
+      - easywash-net
     restart: always
     depends_on:
       - config
@@ -203,7 +170,7 @@ services:
       - CONFIG_SERVICE_PASSWORD=$CONFIG_SERVICE_PASSWORD
       - MAIL_SERVICE_PASSWORD=$MAIL_SERVICE_PASSWORD
     networks:
-      - softbooks-net
+      - easywash-net
     restart: always
     depends_on:
       - config
@@ -214,4 +181,4 @@ services:
         max-file: "10"
 
 networks:
-  softbooks-net:
+  easywash-net:
