@@ -40,15 +40,15 @@ spring:
           predicates:
             - Path=/file/**
 
-        - id: car_service
-          uri: lb://CAR-SERVICE/
-          predicates:
-            - Path=/cars/**
+#        - id: car_service
+#          uri: lb://CAR-SERVICE/
+#          predicates:
+#            - Path=/cars/**
 
-        - id: mail_service
-          uri: lb://MAIL-SERVICE/
+        - id: main_service
+          uri: lb://MAIN-SERVICE/
           predicates:
-            - Path=/mail/**
+            - Path=/main/**
 
       discovery:
         locator:

@@ -39,9 +39,9 @@
         <module>gateway</module>
         <module>auth-service</module>
         <module>user-service</module>
-        <module>car-service</module>
+<!--        <module>car-service</module>-->
+        <module>main-service</module>
         <module>file-service</module>
-        <module>mail-service</module>
     </modules>
 
 
