@@ -8,7 +8,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>car-service</artifactId>
+    <artifactId>main-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>car-service</name>
     <description>car-service</description>

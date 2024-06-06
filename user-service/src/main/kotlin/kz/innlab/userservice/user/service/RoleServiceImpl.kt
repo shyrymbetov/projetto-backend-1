@@ -52,7 +52,7 @@ class RoleServiceImpl: RoleService {
     }
 
     override fun createRoles(): Status {
-        val roles = arrayListOf("ADMIN", "EMPLOYEE", "CLIENT")
+        val roles = arrayListOf("ADMIN", "DESIGNER")
         roles.forEach { role ->
             repository.findByNameIgnoreCaseAndDeletedAtIsNull(role).ifPresentOrElse(
                 {

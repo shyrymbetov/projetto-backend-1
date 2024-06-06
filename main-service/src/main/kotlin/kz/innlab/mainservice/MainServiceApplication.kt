@@ -11,8 +11,8 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 @EnableDiscoveryClient
 @EnableOAuth2Client
 @EnableFeignClients
-class CarServiceApplication
+class MainServiceApplication
 
 fun main(args: Array<String>) {
-    runApplication<CarServiceApplication>(*args)
+    runApplication<MainServiceApplication>(*args)
 }

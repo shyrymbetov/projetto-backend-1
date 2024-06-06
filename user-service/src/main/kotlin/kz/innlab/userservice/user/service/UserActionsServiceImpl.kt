@@ -5,7 +5,6 @@ import freemarker.template.Template
 import kz.innlab.userservice.system.client.AuthServiceClient
 import kz.innlab.userservice.system.dto.EmailChangeDTO
 import kz.innlab.userservice.system.dto.MailMessageDto
-import kz.innlab.userservice.system.service.MailService
 import kz.innlab.userservice.user.dto.PasswordDTO
 import kz.innlab.userservice.user.dto.Status
 import kz.innlab.userservice.user.dto.UserRequest
@@ -24,8 +23,6 @@ class UserActionsServiceImpl: UserActionsService {
     @Autowired
     lateinit var templateConfiguration: Configuration
 
-    @Autowired
-    lateinit var mailService: MailService
 
     @Autowired
     lateinit var userService: UserService
@@ -62,7 +59,6 @@ class UserActionsServiceImpl: UserActionsService {
                 val template: Template = templateConfiguration.getTemplate("reset-password.ftl")
 
                 mailMessage.content = FreeMarkerTemplateUtils.processTemplateIntoString(template, model)
-                mailService.sendMail(mailMessage)
                 status.status = 1
                 status.message = "OK"
                 status.value = split.first()

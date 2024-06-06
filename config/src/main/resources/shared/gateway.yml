@@ -40,11 +40,6 @@ spring:
           predicates:
             - Path=/file/**
 
-#        - id: car_service
-#          uri: lb://CAR-SERVICE/
-#          predicates:
-#            - Path=/cars/**
-
         - id: main_service
           uri: lb://MAIN-SERVICE/
           predicates:
