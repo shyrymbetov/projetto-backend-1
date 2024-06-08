@@ -20,7 +20,7 @@ spring:
       enabled: true
       max-file-size: 500MB
       max-request-size: 500MB
-      location: /Users/yerasyl/Desktop/easywash-file
+      location: /Users/yerasyl/Desktop/projetto-file
 
 sketchfab:
   token: 95b2ac087c20456e96f01432d30af82b

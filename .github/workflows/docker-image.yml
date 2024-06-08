@@ -43,7 +43,7 @@ jobs:
         with:
           context: ./user-service
           push: true
-          tags: innlabkz/easywash-user-service:latest
+          tags: innlabkz/projetto-user-service:latest
 
 #  book-service:
 #    runs-on: ubuntu-latest
@@ -84,7 +84,7 @@ jobs:
 #        with:
 #          context: ./book-service
 #          push: true
-#          tags: innlabkz/easywash-book-service:latest
+#          tags: innlabkz/projetto-book-service:latest
 
   car-service:
     runs-on: ubuntu-latest
@@ -125,7 +125,7 @@ jobs:
         with:
           context: ./car-service
           push: true
-          tags: innlabkz/easywash-car-service:latest
+          tags: innlabkz/projetto-car-service:latest
 
   file-service:
     runs-on: ubuntu-latest
@@ -165,7 +165,7 @@ jobs:
         with:
           context: ./file-service
           push: true
-          tags: innlabkz/easywash-file-service:latest
+          tags: innlabkz/projetto-file-service:latest
 
   auth-service:
     runs-on: ubuntu-latest
@@ -205,7 +205,7 @@ jobs:
         with:
           context: ./auth-service
           push: true
-          tags: innlabkz/easywash-auth-service:latest
+          tags: innlabkz/projetto-auth-service:latest
 
   mail-service:
     runs-on: ubuntu-latest
@@ -245,4 +245,4 @@ jobs:
         with:
           context: ./mail-service
           push: true
-          tags: innlabkz/easywash-mail-service:latest
+          tags: innlabkz/projetto-mail-service:latest

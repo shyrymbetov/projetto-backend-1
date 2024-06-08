@@ -1,6 +1,6 @@
 package kz.innlab.mainservice.system.client
 
-import kz.innlab.mainservice.general.dto.Status
+import kz.innlab.mainservice.dto.Status
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.PostMapping
 

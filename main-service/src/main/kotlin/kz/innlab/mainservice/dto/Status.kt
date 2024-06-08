@@ -1,4 +1,4 @@
-package kz.innlab.mainservice.general.dto
+package kz.innlab.mainservice.dto
 
 data class Status (
     var status: Int = 0,
