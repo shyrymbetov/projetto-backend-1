@@ -9,7 +9,7 @@ import java.util.*
 data class RegistrationUserDto(
     var firstName: String? = null,
     var lastName: String? = null,
-    var type: RegistrationType? = RegistrationType.CLIENT,
+    var type: RegistrationType? = RegistrationType.DESIGNER,
     var phone: String? = null,
     var email: String = "",
     var password: String? = null,
