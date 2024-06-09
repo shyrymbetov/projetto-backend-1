@@ -20,7 +20,7 @@ spring:
 #              - "http://localhost:4200"
 #              - "http://localhost:9753"
 #              - "http://localhost:5173"
-            allowedOrigins: "http://localhost:5173"
+            allowedOrigins: "http://localhost:3000"
             allowedHeaders: "*"
             allowedMethods: "*"
             allowCredentials: true
