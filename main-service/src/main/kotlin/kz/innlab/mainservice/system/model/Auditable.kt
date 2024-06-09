@@ -41,7 +41,7 @@ abstract class Auditable<U> : Serializable {
         private set
 
     @CreatedBy
-    protected var creator: U? = null
+    var creator: U? = null
 
     @LastModifiedDate
     @Column(name="updated_at")

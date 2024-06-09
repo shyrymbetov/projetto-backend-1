@@ -122,4 +122,11 @@ class NewsServiceImpl: NewsService {
         }
     }
 
+    override fun getLikedNews(userId: UUID): List<News> {
+        return repository.findAllByLikedUsersContains(userId).map {
+            it.isFavorite = true
+            it
+        }
+    }
+
 }

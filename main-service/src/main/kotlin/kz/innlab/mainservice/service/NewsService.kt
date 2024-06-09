@@ -13,4 +13,5 @@ interface NewsService {
     fun deleteNews(id: UUID): Status
     fun getNewsList(userId: UUID): List<News>
     fun getNewsById(id: UUID, userId: UUID): Optional<News>
+    fun getLikedNews(userId: UUID): List<News>
 }

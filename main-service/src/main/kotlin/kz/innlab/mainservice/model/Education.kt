@@ -1,8 +1,6 @@
 package kz.innlab.mainservice.model
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.vladmihalcea.hibernate.type.array.StringArrayType
-import kz.innlab.mainservice.system.model.Auditable
 import org.hibernate.annotations.TypeDef
 import org.hibernate.annotations.TypeDefs
 import java.util.*

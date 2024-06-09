@@ -55,4 +55,10 @@ class NewsController {
     fun getNewsById(@PathVariable id: UUID, principal: Principal?): Optional<News> {
         return newsService.getNewsById(id, UUID.fromString(principal?.name ?: UUID.randomUUID().toString()))
     }
+
+    @GetMapping("/liked")
+    @PreAuthorize("isAuthenticated()")
+    fun getLikedNews(principal: Principal): List<News> {
+        return newsService.getLikedNews(UUID.fromString(principal.name))
+    }
 }

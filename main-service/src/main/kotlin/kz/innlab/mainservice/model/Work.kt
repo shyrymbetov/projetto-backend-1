@@ -10,14 +10,14 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
-@Table(name = "news")
+@Table(name = "works")
 @TypeDefs(
     TypeDef(
         name = "string-array",
         typeClass = StringArrayType::class
     )
 )
-class News: Auditable<String?>() {
+class Work: Auditable<String?>() {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: UUID? = null
@@ -28,14 +28,14 @@ class News: Auditable<String?>() {
     @Column(name = "TITLE_RU", columnDefinition = "character varying")
     var titleRu: String? = null
 
-    @Column(name = "CONTENT_EN", columnDefinition = "character varying")
-    var contentEn: String? = null
-
-    @Column(name = "CONTENT_RU", columnDefinition = "character varying")
-    var contentRu: String? = null
-
     @Column(name = "IMAGE")
     var image: UUID? = null
+
+    @Column(name = "FILE")
+    var file: UUID? = null
+
+    @Column(name = "AUTHOR")
+    var author: UUID? = null
 
     @Type(type = "uuid-array")
     @Column(name = "liked_users", columnDefinition="uuid[]")
