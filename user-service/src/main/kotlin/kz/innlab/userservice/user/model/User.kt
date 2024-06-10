@@ -69,7 +69,7 @@ class User: Auditable<String?>() {
     @Column(name = "PASSWORD", columnDefinition = "character varying", nullable = false)
     var password: String = ""
 
-    @Column(name = "PHONE", unique = true, nullable = false)
+    @Column(name = "PHONE", nullable = false)
     var phone: String = ""
         set(value) {
             field = value.lowercase().replace(" ", "") // remove all space

@@ -133,6 +133,7 @@ class UserServiceImpl : UserService {
         newUser.firstName = userRequest.firstName
         newUser.lastName = userRequest.lastName
         newUser.email = userRequest.email
+        newUser.phone = userRequest.phone ?: "87059040016"
         newUser.provider = UserProviderType.LOCAL
         newUser.password = userRequest.password ?: "123"
         return newUser
@@ -145,6 +146,7 @@ class UserServiceImpl : UserService {
             val newUser = userRequestToUser(user)
             newUser.firstName = user.firstName
             newUser.lastName = user.lastName
+            newUser.phone = user.phone ?: "87059040011"
             newUser.email = user.email ?: ""
             newUser.password = user.password ?: "123"
             newUser.roles = user.roles

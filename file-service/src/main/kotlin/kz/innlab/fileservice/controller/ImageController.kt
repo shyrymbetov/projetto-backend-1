@@ -28,7 +28,7 @@ class ImageController {
     lateinit var fileService: ImageService
 
     @GetMapping("{id}")
-    @PreAuthorize("isAuthenticated()")
+//    @PreAuthorize("isAuthenticated()")
     fun getImageSource(
         @PathVariable(value = "id") id: UUID,
         @RequestParam size: String? = null,
